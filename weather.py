@@ -6,11 +6,21 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.gridlayout import GridLayout
 import requests
 from dotenv import load_dotenv
+import tweepy
 import os
 
 # Load environment variables from .env
 load_dotenv()
 ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+
+# Read the Twitter API credentials from the .env file
+TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN")
+TWITTER_ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
+TWITTER_ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
+
+# Set up tweepy with your Twitter API credentials
+auth = tweepy.OAuth1BearerHandler(TWITTER_BEARER_TOKEN, resource_owner_key=TWITTER_ACCESS_TOKEN, resource_owner_secret=TWITTER_ACCESS_TOKEN_SECRET)
+api = tweepy.API(auth)
 
 # Dictionary to map location names to their AccuWeather location keys
 locations = {
