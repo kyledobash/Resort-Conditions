@@ -5,21 +5,16 @@ import requests
 from datetime import datetime
 from dotenv import load_dotenv
 import os
-import pywifi
-from pywifi import const
 
 # Load environment variables from .env
 load_dotenv()
-WEATHERAPI_BASE_URL = "http://api.weatherapi.com/v1/forecast.json"
+ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
 
-# Get the API key from the environment variable
-WEATHERAPI_API_KEY = os.getenv("WEATHERAPI_API_KEY")
-
-# Dictionary to map location names to their city names and coordinates
+# Dictionary to map location names to their AccuWeather location keys
 locations = {
-    "Brighton": (40.5980, -111.5832),   # Brighton Ski Resort, Utah
-    "Snowbird": (40.5812, -111.6557),   # Snowbird Ski Resort, Utah
-    "Snowbasin": (41.2163, -111.8583)   # Snowbasin Ski Resort, Utah
+    "Brighton": "1-28182_1_poi_al",   # Brighton Ski Resort, Utah
+    "Snowbird": "101347_poi",         # Snowbird Ski Resort, Utah
+    "Snowbasin": "101346_poi"         # Snowbasin Ski Resort, Utah
 }
 
 class SkiResortWeatherApp(QMainWindow):
@@ -36,13 +31,9 @@ class SkiResortWeatherApp(QMainWindow):
         self.init_ui()
 
     def check_wifi_connection(self):
-        wifi = pywifi.PyWiFi()
-        iface = wifi.interfaces()[0]
-
-        if iface.status() in [const.IFACE_CONNECTED, const.IFACE_CONNECTING]:
-            return True
-        else:
-            return False
+        # Replace this with your Wi-Fi connection check logic
+        # For now, return True to simulate a successful Wi-Fi connection
+        return True
 
     def show_wifi_message(self):
         msg = QMessageBox()
@@ -72,8 +63,7 @@ class SkiResortWeatherApp(QMainWindow):
 
         self.result_labels = {}  # Dictionary to hold the weather data labels
 
-        for location, coordinates in locations.items():
-            latitude, longitude = coordinates
+        for location, location_key in locations.items():
             label = QLabel("Fetching weather data...")
             weather_layout.addWidget(label)
             self.result_labels[location] = label
@@ -82,62 +72,28 @@ class SkiResortWeatherApp(QMainWindow):
         self.fetch_weather_data()
 
     def fetch_weather_data(self):
-        for location, coordinates in locations.items():
-            latitude, longitude = coordinates
-            print(f"Fetching weather data for {location} (lat: {latitude}, lon: {longitude})")
+        for location, location_key in locations.items():
+            print(f"Fetching weather data for {location} (location key: {location_key})")
 
-            # Fetch current weather data from WeatherAPI using latitude and longitude
+            # Fetch current weather data from AccuWeather using location key
             current_params = {
-                "key": WEATHERAPI_API_KEY,
-                "q": f"{latitude},{longitude}",
-                "units": "imperial"  # Request units in Fahrenheit
+                "apikey": ACCUWEATHER_API_KEY,
+                "details": True
             }
 
             try:
-                current_response = requests.get(WEATHERAPI_BASE_URL, params=current_params)
+                current_response = requests.get(f"http://dataservice.accuweather.com/currentconditions/v1/{location_key}", params=current_params)
                 current_data = current_response.json()
 
-                if "current" in current_data:
-                    current_temp = current_data["current"]["temp_f"]
-                    current_condition = current_data["current"]["condition"]["text"]
+                if current_data and isinstance(current_data, list):
+                    weather_data = current_data[0]
+                    current_temp = weather_data.get("Temperature", {}).get("Imperial", {}).get("Value")
+                    current_condition = weather_data.get("WeatherText")
 
                     location_data = f"{location}\n"
                     location_data += f"Current Temperature: {current_temp}°F\n"
                     location_data += f"Current Conditions: {current_condition}\n"
-
-                    # Fetch hourly forecast from WeatherAPI using latitude and longitude
-                    forecast_params = {
-                        "key": WEATHERAPI_API_KEY,
-                        "q": f"{latitude},{longitude}",
-                        "units": "imperial",  # Request units in Fahrenheit
-                        "hour": 2  # Show the next 2-hour forecast starting from the current hour
-                    }
-
-                    forecast_response = requests.get(WEATHERAPI_BASE_URL, params=forecast_params)
-                    forecast_data = forecast_response.json()
-
-                    if "forecast" in forecast_data and "forecastday" in forecast_data["forecast"]:
-                        forecast_days = forecast_data["forecast"]["forecastday"]
-                        unique_dates = set()  # Keep track of unique dates
-
-                        for forecast in forecast_days:
-                            date = forecast["date"]
-                            if date not in unique_dates:
-                                unique_dates.add(date)
-                                location_data += f"\nDate: {date}\n"
-
-                            for i in range(min(2, len(forecast["hour"]))):  # Show the next 2-hour forecasts (up to 2 if available)
-                                hour = forecast["hour"][i]
-                                time = datetime.strptime(hour["time"], "%Y-%m-%d %H:%M")
-                                time_str = time.strftime("%H:%M")  # Remove the seconds from the time
-                                temp = hour["temp_f"]
-                                condition = hour["condition"]["text"]
-                                location_data += f"{time_str}: {temp}°F, {condition}\n"
-
-                        location_data += "-------------------------------------------\n"
-                        self.result_labels[location].setText(location_data)
-                    else:
-                        self.result_labels[location].setText(f"Weather forecast data not available for {location}\n")
+                    self.result_labels[location].setText(location_data)
                 else:
                     self.result_labels[location].setText(f"Weather data not available for {location}\n")
             except requests.exceptions.RequestException as e:
