@@ -3,6 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.gridlayout import GridLayout
 import requests
 from dotenv import load_dotenv
 import os
@@ -18,36 +19,38 @@ locations = {
     "Snowbasin": "101346_poi"         # Snowbasin Ski Resort, Utah
 }
 
-class MainMenuScreen(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = 'vertical'
-
-        # Create buttons for each resort
-        for location, _ in locations.items():
-            button = Button(text=location)
-            button.bind(on_release=self.switch_to_resort_screen)
-            self.add_widget(button)
-
-    def switch_to_resort_screen(self, button):
-        app = App.get_running_app()
-        app.root.current = button.text
-
 class ResortScreen(BoxLayout):
     def __init__(self, location, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.location = location
 
+        # Top row with resort name centered
+        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
+        top_layout.add_widget(Label(text=self.location, halign='center', valign='middle'))
+        self.add_widget(top_layout)
+
+        # Two-column layout using GridLayout
+        grid_layout = GridLayout(cols=2, size_hint=(1, 0.8))
+        self.add_widget(grid_layout)
+
+        # Left column for weather data
+        left_layout = BoxLayout(orientation='vertical')
         self.weather_label = Label(text="Fetching weather data...")
-        self.add_widget(self.weather_label)
+        left_layout.add_widget(self.weather_label)
+        grid_layout.add_widget(left_layout)
+
+        # Right column (empty for now)
+        grid_layout.add_widget(BoxLayout())
 
         self.fetch_weather_data()
 
-        # Add a "Back to Menu" button with custom size
-        back_button = Button(text="Back to Menu", size_hint=(1, 0.1))  # Adjust the size here
+        # Bottom row with "Back to Menu" button
+        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
+        back_button = Button(text="Back to Menu")
         back_button.bind(on_release=self.switch_to_main_menu)
-        self.add_widget(back_button)
+        bottom_layout.add_widget(back_button)
+        self.add_widget(bottom_layout)
 
     def fetch_weather_data(self):
         location_key = locations[self.location]
@@ -80,6 +83,21 @@ class ResortScreen(BoxLayout):
     def switch_to_main_menu(self, button):
         app = App.get_running_app()
         app.root.current = 'Main Menu'
+
+class MainMenuScreen(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = 'vertical'
+
+        # Create buttons for each resort
+        for location, _ in locations.items():
+            button = Button(text=location)
+            button.bind(on_release=self.switch_to_resort_screen)
+            self.add_widget(button)
+
+    def switch_to_resort_screen(self, button):
+        app = App.get_running_app()
+        app.root.current = button.text
 
 class SkiResortWeatherApp(App):
     def build(self):
