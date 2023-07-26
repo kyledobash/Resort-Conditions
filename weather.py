@@ -67,12 +67,23 @@ class ResortScreen(BoxLayout):
 
             if current_data and isinstance(current_data, list):
                 weather_data = current_data[0]
+
+                # Extract weather data
                 current_temp = weather_data.get("Temperature", {}).get("Imperial", {}).get("Value")
                 current_condition = weather_data.get("WeatherText")
+                humidity = weather_data.get("RelativeHumidity")
+                wind_speed = weather_data.get("Wind", {}).get("Speed", {}).get("Imperial", {}).get("Value")
+                visibility = weather_data.get("Visibility", {}).get("Imperial", {}).get("Value")
 
-                location_data = f"{self.location}\n"
-                location_data += f"Current Temperature: {current_temp}°F\n"
-                location_data += f"Current Conditions: {current_condition}\n"
+                # Format weather data for display
+                location_data = f"Current Conditions\n"
+                location_data += f"Temperature: {current_temp}°F\n"
+                location_data += f"Conditions: {current_condition}\n"
+                location_data += f"Humidity: {humidity}%\n"
+                location_data += f"Wind Speed: {wind_speed} mph\n"
+                location_data += f"Visibility: {visibility} miles\n"
+
+                # Display the weather data
                 self.weather_label.text = location_data
             else:
                 self.weather_label.text = f"Weather data not available for {self.location}\n"
