@@ -27,23 +27,28 @@ class ResortScreen(BoxLayout):
 
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
-        top_layout.add_widget(Label(text=self.location, halign='center', valign='middle'))
+        resort_name_label = Label(text=f"[color=FFD700][b]{self.location}[/b][/color]", halign='center', valign='middle', markup=True)
+        top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
         # Two-column layout using GridLayout
         grid_layout = GridLayout(cols=2, size_hint=(1, 0.8))
         self.add_widget(grid_layout)
 
-        # Left column for weather data
+        # Left column for weather data and forecast
         left_layout = BoxLayout(orientation='vertical')
         self.weather_label = Label(text="Fetching weather data...")
         left_layout.add_widget(self.weather_label)
+        self.forecast_label = Label(text="Fetching forecast data...", markup=True)
+        left_layout.add_widget(self.forecast_label)
         grid_layout.add_widget(left_layout)
 
         # Right column (empty for now)
         grid_layout.add_widget(BoxLayout())
 
+        # Fetch both current conditions and 1-day daily forecasts
         self.fetch_weather_data()
+        self.fetch_forecast_data()
 
         # Bottom row with "Back to Menu" button
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
@@ -75,7 +80,7 @@ class ResortScreen(BoxLayout):
                 wind_speed = weather_data.get("Wind", {}).get("Speed", {}).get("Imperial", {}).get("Value")
                 visibility = weather_data.get("Visibility", {}).get("Imperial", {}).get("Value")
 
-                # Format weather data for display
+                # Format current weather data for display
                 location_data = f"Current Conditions\n"
                 location_data += f"Temperature: {current_temp}°F\n"
                 location_data += f"Conditions: {current_condition}\n"
@@ -83,13 +88,47 @@ class ResortScreen(BoxLayout):
                 location_data += f"Wind Speed: {wind_speed} mph\n"
                 location_data += f"Visibility: {visibility} miles\n"
 
-                # Display the weather data
+                # Display the current weather data
                 self.weather_label.text = location_data
             else:
                 self.weather_label.text = f"Weather data not available for {self.location}\n"
         except requests.exceptions.RequestException as e:
             self.weather_label.text = f"Failed to fetch weather data for {self.location}\n"
             print(f"Error: {e}")
+
+    def fetch_forecast_data(self):
+        location_key = locations[self.location]
+
+        # Fetch 1-day daily forecasts from AccuWeather using location key
+        forecast_params = {
+            "apikey": ACCUWEATHER_API_KEY,
+            "details": True
+        }
+
+        try:
+            forecast_response = requests.get(f"http://dataservice.accuweather.com/forecasts/v1/daily/1day/{location_key}", params=forecast_params)
+            forecast_data = forecast_response.json()
+
+            if "DailyForecasts" in forecast_data:
+                forecast_data = forecast_data["DailyForecasts"][0]
+
+                # Extract forecast data
+                forecast_temp_min = forecast_data.get("Temperature", {}).get("Minimum", {}).get("Value")
+                forecast_temp_max = forecast_data.get("Temperature", {}).get("Maximum", {}).get("Value")
+                forecast_day_condition = forecast_data.get("Day", {}).get("IconPhrase")
+
+                # Format forecast data for display
+                forecast_data = f"Forecast for {forecast_data['Date']}\n"
+                forecast_data += f"Temperature Min: {forecast_temp_min}°F\n"
+                forecast_data += f"Temperature Max: {forecast_temp_max}°F\n"
+                forecast_data += f"Day Conditions: {forecast_day_condition}\n"
+
+                # Display the forecast data
+                self.forecast_label.text = forecast_data
+            else:
+                print(f"Forecast data not available for {self.location}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching forecast data for {self.location}: {e}")
 
     def switch_to_main_menu(self, button):
         app = App.get_running_app()
