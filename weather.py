@@ -1,3 +1,4 @@
+import kivy
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -5,28 +6,31 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.gridlayout import GridLayout
 import requests
-from dotenv import load_dotenv
-import tweepy
 import os
+import logging
+from dotenv import load_dotenv
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Load environment variables from .env
 load_dotenv()
 ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
 
-# Read the Twitter API credentials from the .env file
-TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN")
-TWITTER_ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
-TWITTER_ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
-
-# Set up tweepy with your Twitter API credentials
-auth = tweepy.OAuth1BearerHandler(TWITTER_BEARER_TOKEN, resource_owner_key=TWITTER_ACCESS_TOKEN, resource_owner_secret=TWITTER_ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
-
-# Dictionary to map location names to their AccuWeather location keys
-locations = {
-    "Brighton": "1-28182_1_poi_al",   # Brighton Ski Resort, Utah
-    "Snowbird": "101347_poi",         # Snowbird Ski Resort, Utah
-    "Snowbasin": "101346_poi"         # Snowbasin Ski Resort, Utah
+# Dictionary to map location names to their AccuWeather location keys and Twitter handles
+resorts = {
+    "Brighton": {
+        "accuweather_key": "1-28182_1_poi_al",   # Brighton Ski Resort, Utah
+        "twitter_handle": "brightonresort"
+    },
+    "Snowbird": {
+        "accuweather_key": "101347_poi",         # Snowbird Ski Resort, Utah
+        "twitter_handle": "snowbird"
+    },
+    "Snowbasin": {
+        "accuweather_key": "101346_poi",         # Snowbasin Ski Resort, Utah
+        "twitter_handle": "snowbasinresort"
+    }
 }
 
 class ResortScreen(BoxLayout):
@@ -34,6 +38,8 @@ class ResortScreen(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.location = location
+        resort_data = resorts[location]
+        self.twitter_handle = resort_data["twitter_handle"]
 
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
@@ -53,12 +59,14 @@ class ResortScreen(BoxLayout):
         left_layout.add_widget(self.forecast_label)
         grid_layout.add_widget(left_layout)
 
-        # Right column (empty for now)
-        grid_layout.add_widget(BoxLayout())
+        # Right column for Twitter embedded timeline
+        self.twitter_label = Label(text="Fetching Twitter feed...", markup=True)
+        grid_layout.add_widget(self.twitter_label)
 
         # Fetch both current conditions and 1-day daily forecasts
         self.fetch_weather_data()
         self.fetch_forecast_data()
+        self.fetch_twitter_embed()
 
         # Bottom row with "Back to Menu" button
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
@@ -68,7 +76,7 @@ class ResortScreen(BoxLayout):
         self.add_widget(bottom_layout)
 
     def fetch_weather_data(self):
-        location_key = locations[self.location]
+        location_key = resorts[self.location]["accuweather_key"]
 
         # Fetch current weather data from AccuWeather using location key
         current_params = {
@@ -104,10 +112,10 @@ class ResortScreen(BoxLayout):
                 self.weather_label.text = f"Weather data not available for {self.location}\n"
         except requests.exceptions.RequestException as e:
             self.weather_label.text = f"Failed to fetch weather data for {self.location}\n"
-            print(f"Error: {e}")
+            logging.error(f"Error fetching weather data for {self.location}: {e}")
 
     def fetch_forecast_data(self):
-        location_key = locations[self.location]
+        location_key = resorts[self.location]["accuweather_key"]
 
         # Fetch 1-day daily forecasts from AccuWeather using location key
         forecast_params = {
@@ -128,17 +136,32 @@ class ResortScreen(BoxLayout):
                 forecast_day_condition = forecast_data.get("Day", {}).get("IconPhrase")
 
                 # Format forecast data for display
-                forecast_data = f"Forecast for {forecast_data['Date']}\n"
-                forecast_data += f"Temperature Min: {forecast_temp_min}°F\n"
-                forecast_data += f"Temperature Max: {forecast_temp_max}°F\n"
-                forecast_data += f"Day Conditions: {forecast_day_condition}\n"
+                forecast_data_str = f"Forecast for {forecast_data['Date']}\n"
+                forecast_data_str += f"Temperature Min: {forecast_temp_min}°F\n"
+                forecast_data_str += f"Temperature Max: {forecast_temp_max}°F\n"
+                forecast_data_str += f"Day Conditions: {forecast_day_condition}\n"
 
                 # Display the forecast data
-                self.forecast_label.text = forecast_data
+                self.forecast_label.text = forecast_data_str
             else:
-                print(f"Forecast data not available for {self.location}")
+                self.forecast_label.text = f"Forecast data not available for {self.location}\n"
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching forecast data for {self.location}: {e}")
+            self.forecast_label.text = f"Error fetching forecast data for {self.location}\n"
+            logging.error(f"Error fetching forecast data for {self.location}: {e}")
+
+    def fetch_twitter_embed(self):
+        # Fetch the HTML code for the Twitter embed using Twitter's oEmbed API
+        try:
+            tweet_embed_url = f"https://publish.twitter.com/oembed?url=https://twitter.com/{self.twitter_handle}/"
+            response = requests.get(tweet_embed_url)
+            if response.status_code == 200:
+                tweet_embed_data = response.json()
+                self.twitter_label.text = tweet_embed_data["html"]
+            else:
+                self.twitter_label.text = f"Error fetching Twitter embed for {self.location}\n"
+        except requests.exceptions.RequestException as e:
+            self.twitter_label.text = f"Failed to fetch Twitter embed for {self.location}\n"
+            logging.error(f"Error fetching Twitter embed for {self.location}: {e}")
 
     def switch_to_main_menu(self, button):
         app = App.get_running_app()
@@ -150,7 +173,7 @@ class MainMenuScreen(BoxLayout):
         self.orientation = 'vertical'
 
         # Create buttons for each resort
-        for location, _ in locations.items():
+        for location, _ in resorts.items():
             button = Button(text=location)
             button.bind(on_release=self.switch_to_resort_screen)
             self.add_widget(button)
@@ -169,7 +192,7 @@ class SkiResortWeatherApp(App):
         self.screen_manager.add_widget(main_menu_screen)
 
         # Add resort-specific screens
-        for location, _ in locations.items():
+        for location, _ in resorts.items():
             resort_screen = Screen(name=location)
             resort_screen.add_widget(ResortScreen(location))
             self.screen_manager.add_widget(resort_screen)
