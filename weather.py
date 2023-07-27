@@ -1,10 +1,8 @@
-import kivy
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.uix.gridlayout import GridLayout
 import requests
 import os
 import logging
@@ -38,8 +36,6 @@ class ResortScreen(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.location = location
-        resort_data = resorts[location]
-        self.twitter_handle = resort_data["twitter_handle"]
 
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
@@ -47,33 +43,43 @@ class ResortScreen(BoxLayout):
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
-        # Two-column layout using GridLayout
-        grid_layout = GridLayout(cols=2, size_hint=(1, 0.8))
-        self.add_widget(grid_layout)
+        # Two-column layout using BoxLayout
+        content_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.8))
+        self.add_widget(content_layout)
 
-        # Left column for weather data and forecast
+        # Left column for weather data and forecast (as before)
         left_layout = BoxLayout(orientation='vertical')
         self.weather_label = Label(text="Fetching weather data...")
         left_layout.add_widget(self.weather_label)
         self.forecast_label = Label(text="Fetching forecast data...", markup=True)
         left_layout.add_widget(self.forecast_label)
-        grid_layout.add_widget(left_layout)
+        content_layout.add_widget(left_layout)
 
         # Right column for Twitter embedded timeline
-        self.twitter_label = Label(text="Fetching Twitter feed...", markup=True)
-        grid_layout.add_widget(self.twitter_label)
+        right_layout = BoxLayout(orientation='vertical')
+        twitter_embed_html = self.load_twitter_embed()
+        twitter_label = Label(text=twitter_embed_html, markup=True)
+        right_layout.add_widget(twitter_label)
+        content_layout.add_widget(right_layout)
 
-        # Fetch both current conditions and 1-day daily forecasts
+        # Fetch both current conditions and 1-day daily forecasts (as before)
         self.fetch_weather_data()
         self.fetch_forecast_data()
-        self.fetch_twitter_embed()
 
-        # Bottom row with "Back to Menu" button
+        # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
         back_button = Button(text="Back to Menu")
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
+
+    def load_twitter_embed(self):
+        # Load the HTML code for the Twitter embed from the file
+        try:
+            with open(f"twitter-embeds/{self.location.lower()}.html", "r") as file:
+                return file.read()
+        except FileNotFoundError:
+            return f"Twitter embed not available for {self.location}\n"
 
     def fetch_weather_data(self):
         location_key = resorts[self.location]["accuweather_key"]
@@ -148,20 +154,6 @@ class ResortScreen(BoxLayout):
         except requests.exceptions.RequestException as e:
             self.forecast_label.text = f"Error fetching forecast data for {self.location}\n"
             logging.error(f"Error fetching forecast data for {self.location}: {e}")
-
-    def fetch_twitter_embed(self):
-        # Fetch the HTML code for the Twitter embed using Twitter's oEmbed API
-        try:
-            tweet_embed_url = f"https://publish.twitter.com/oembed?url=https://twitter.com/{self.twitter_handle}/"
-            response = requests.get(tweet_embed_url)
-            if response.status_code == 200:
-                tweet_embed_data = response.json()
-                self.twitter_label.text = tweet_embed_data["html"]
-            else:
-                self.twitter_label.text = f"Error fetching Twitter embed for {self.location}\n"
-        except requests.exceptions.RequestException as e:
-            self.twitter_label.text = f"Failed to fetch Twitter embed for {self.location}\n"
-            logging.error(f"Error fetching Twitter embed for {self.location}: {e}")
 
     def switch_to_main_menu(self, button):
         app = App.get_running_app()
