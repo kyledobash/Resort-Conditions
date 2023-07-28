@@ -1,5 +1,5 @@
-PyQt5
+kivy
 requests
-python-dotenv
-pywifi
-comtypes
+os
+logging
+dotenv

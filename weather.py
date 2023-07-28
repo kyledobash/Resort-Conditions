@@ -57,10 +57,6 @@ class ResortScreen(BoxLayout):
 
         # Right column for Twitter embedded timeline
         right_layout = BoxLayout(orientation='vertical')
-        twitter_embed_html = self.load_twitter_embed()
-        twitter_label = Label(text=twitter_embed_html, markup=True)
-        right_layout.add_widget(twitter_label)
-        content_layout.add_widget(right_layout)
 
         # Fetch both current conditions and 1-day daily forecasts (as before)
         self.fetch_weather_data()
@@ -72,14 +68,6 @@ class ResortScreen(BoxLayout):
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
-
-    def load_twitter_embed(self):
-        # Load the HTML code for the Twitter embed from the file
-        try:
-            with open(f"twitter-embeds/{self.location.lower()}.html", "r") as file:
-                return file.read()
-        except FileNotFoundError:
-            return f"Twitter embed not available for {self.location}\n"
 
     def fetch_weather_data(self):
         location_key = resorts[self.location]["accuweather_key"]
