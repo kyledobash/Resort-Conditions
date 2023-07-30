@@ -6,6 +6,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 import requests
 import os
 import logging
+import datetime
 from dotenv import load_dotenv
 
 # Set up logging
@@ -131,7 +132,7 @@ class ResortScreen(BoxLayout):
 
                 # Format daily forecast data for display
                 # forecast_data_str = f"Forecast for {daily_forecast_data['Date']}\n"
-                forecast_data_str += f"Temperature Min: {forecast_temp_min}°F\n"
+                forecast_data_str = f"Temperature Min: {forecast_temp_min}°F\n"
                 forecast_data_str += f"Temperature Max: {forecast_temp_max}°F\n"
                 forecast_data_str += f"Day Conditions: {forecast_day_condition}\n"
             else:
@@ -152,10 +153,12 @@ class ResortScreen(BoxLayout):
                 # Extract and format hourly forecast data for display
                 hourly_data_str = "Hourly Forecast:\n"
                 for hour in hourly_forecast_data:
-                    time = hour.get("DateTime")
+                    time_str = hour.get("DateTime")
+                    time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
+                    hour_str = time.strftime("%H:%M")  # Extract hour part from time
                     temp = hour.get("Temperature", {}).get("Value")
                     condition = hour.get("IconPhrase")
-                    hourly_data_str += f"{time} - Temp: {temp}°F - Condition: {condition}\n"
+                    hourly_data_str += f"{hour_str} - Temp: {temp}°F - Condition: {condition}\n"
             else:
                 hourly_data_str = f"Hourly forecast data not available for {self.location}\n"
 
