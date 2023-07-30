@@ -111,37 +111,60 @@ class ResortScreen(BoxLayout):
     def fetch_forecast_data(self):
         location_key = resorts[self.location]["accuweather_key"]
 
-        # Fetch 1-day daily forecasts from AccuWeather using location key
-        forecast_params = {
+        # Fetch 1-day daily forecast from AccuWeather using location key
+        daily_forecast_params = {
             "apikey": ACCUWEATHER_API_KEY,
-            "details": True
+            "details": True,
         }
 
         try:
-            forecast_response = requests.get(f"http://dataservice.accuweather.com/forecasts/v1/daily/1day/{location_key}", params=forecast_params)
-            forecast_data = forecast_response.json()
+            daily_forecast_response = requests.get(f"http://dataservice.accuweather.com/forecasts/v1/daily/1day/{location_key}", params=daily_forecast_params)
+            daily_forecast_data = daily_forecast_response.json()
 
-            if "DailyForecasts" in forecast_data:
-                forecast_data = forecast_data["DailyForecasts"][0]
+            if "DailyForecasts" in daily_forecast_data:
+                daily_forecast_data = daily_forecast_data["DailyForecasts"][0]
 
-                # Extract forecast data
-                forecast_temp_min = forecast_data.get("Temperature", {}).get("Minimum", {}).get("Value")
-                forecast_temp_max = forecast_data.get("Temperature", {}).get("Maximum", {}).get("Value")
-                forecast_day_condition = forecast_data.get("Day", {}).get("IconPhrase")
+                # Extract daily forecast data
+                forecast_temp_min = daily_forecast_data.get("Temperature", {}).get("Minimum", {}).get("Value")
+                forecast_temp_max = daily_forecast_data.get("Temperature", {}).get("Maximum", {}).get("Value")
+                forecast_day_condition = daily_forecast_data.get("Day", {}).get("IconPhrase")
 
-                # Format forecast data for display
-                forecast_data_str = f"Forecast for {forecast_data['Date']}\n"
+                # Format daily forecast data for display
+                # forecast_data_str = f"Forecast for {daily_forecast_data['Date']}\n"
                 forecast_data_str += f"Temperature Min: {forecast_temp_min}°F\n"
                 forecast_data_str += f"Temperature Max: {forecast_temp_max}°F\n"
                 forecast_data_str += f"Day Conditions: {forecast_day_condition}\n"
-
-                # Display the forecast data
-                self.forecast_label.text = forecast_data_str
             else:
-                self.forecast_label.text = f"Forecast data not available for {self.location}\n"
+                forecast_data_str = f"Daily forecast data not available for {self.location}\n"
+
+            # Fetch hourly forecast from AccuWeather using location key
+            hourly_forecast_params = {
+                "apikey": ACCUWEATHER_API_KEY,
+                "details": True,
+                "metric": False,  # Use Fahrenheit for temperature values
+                "hours": "12",    # Get hourly forecasts for the next 24 hours
+            }
+
+            hourly_forecast_response = requests.get(f"http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/{location_key}", params=hourly_forecast_params)
+            hourly_forecast_data = hourly_forecast_response.json()
+
+            if hourly_forecast_data and isinstance(hourly_forecast_data, list):
+                # Extract and format hourly forecast data for display
+                hourly_data_str = "Hourly Forecast:\n"
+                for hour in hourly_forecast_data:
+                    time = hour.get("DateTime")
+                    temp = hour.get("Temperature", {}).get("Value")
+                    condition = hour.get("IconPhrase")
+                    hourly_data_str += f"{time} - Temp: {temp}°F - Condition: {condition}\n"
+            else:
+                hourly_data_str = f"Hourly forecast data not available for {self.location}\n"
+
+            # Display both daily and hourly forecast data
+            self.forecast_label.text = forecast_data_str + "\n" + hourly_data_str
         except requests.exceptions.RequestException as e:
             self.forecast_label.text = f"Error fetching forecast data for {self.location}\n"
             logging.error(f"Error fetching forecast data for {self.location}: {e}")
+
 
     def switch_to_main_menu(self, button):
         app = App.get_running_app()
@@ -178,6 +201,7 @@ class SkiResortWeatherApp(App):
             self.screen_manager.add_widget(resort_screen)
 
         return self.screen_manager
+    
 
 if __name__ == '__main__':
     app = SkiResortWeatherApp()
