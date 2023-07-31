@@ -270,7 +270,7 @@ class ResortScreen(BoxLayout):
             if hourly_forecast_data and isinstance(hourly_forecast_data, list):
                 # Extract and format hourly forecast data for display
                 hourly_data_str = "Hourly Forecast:\n"
-                for hour in hourly_forecast_data:
+                for hour in hourly_forecast_data[:5]:
                     time_str = hour.get("DateTime")
                     time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
                     hour_str = time.strftime("%H:%M")  # Extract hour part from time
