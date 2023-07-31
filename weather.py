@@ -1,5 +1,6 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -44,8 +45,20 @@ class ResortScreen(BoxLayout):
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
-        # Two-column layout using BoxLayout
-        content_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.8))
+        # # Two-column layout using BoxLayout
+        # content_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.8))
+        # self.add_widget(content_layout)
+
+        # # Left column for weather data and forecast (as before)
+        # left_layout = BoxLayout(orientation='vertical')
+        # self.weather_label = Label(text="Fetching weather data...")
+        # left_layout.add_widget(self.weather_label)
+        # self.forecast_label = Label(text="Fetching forecast data...", markup=True)
+        # left_layout.add_widget(self.forecast_label)
+        # content_layout.add_widget(left_layout)
+
+        # Two-column layout using GridLayout
+        content_layout = GridLayout(cols=2, size_hint=(1, 0.8))
         self.add_widget(content_layout)
 
         # Left column for weather data and forecast (as before)
@@ -56,12 +69,25 @@ class ResortScreen(BoxLayout):
         left_layout.add_widget(self.forecast_label)
         content_layout.add_widget(left_layout)
 
+        # # Right column for Twitter embedded timeline
+        # right_layout = BoxLayout(orientation='vertical')
+
         # Right column for Twitter embedded timeline
         right_layout = BoxLayout(orientation='vertical')
+        # Add Twitter feed iframe here
+        content_layout.add_widget(right_layout)
 
         # Fetch both current conditions and 1-day daily forecasts (as before)
+        self.fetch_historical_current_data()
         self.fetch_weather_data()
         self.fetch_forecast_data()
+
+        # # Bottom row with "Back to Menu" button (as before)
+        # bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
+        # back_button = Button(text="Back to Menu")
+        # back_button.bind(on_release=self.switch_to_main_menu)
+        # bottom_layout.add_widget(back_button)
+        # self.add_widget(bottom_layout)
 
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
@@ -69,6 +95,40 @@ class ResortScreen(BoxLayout):
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
+
+    def fetch_historical_current_data(self):
+        location_key = resorts[self.location]["accuweather_key"]
+
+        # Fetch historical current conditions for the past 24 hours from AccuWeather using location key
+        historical_current_params = {
+            "apikey": ACCUWEATHER_API_KEY,
+            "details": True,
+            "metric": False,  # Use Fahrenheit for temperature values
+            "hours": "24",    # Get historical current conditions for the past 24 hours
+        }
+
+        try:
+            historical_current_response = requests.get(f"http://dataservice.accuweather.com/currentconditions/v1/{location_key}/historical/24", params=historical_current_params)
+            historical_current_data = historical_current_response.json()
+
+            if historical_current_data and isinstance(historical_current_data, list):
+                # Extract and format historical current conditions data for display
+                historical_current_data_str = "Historical Current Conditions (Past 24 Hours):\n"
+                for data in historical_current_data:
+                    time_str = data.get("LocalObservationDateTime")
+                    time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
+                    hour_str = time.strftime("%H:%M")  # Extract hour part from time
+                    temp = data.get("Temperature", {}).get("Imperial", {}).get("Value")
+                    condition = data.get("WeatherText")
+                    historical_current_data_str += f"{hour_str} - Temp: {temp}°F - Condition: {condition}\n"
+            else:
+                historical_current_data_str = f"Historical current conditions data not available for the past 24 hours in {self.location}\n"
+
+            # Display historical current conditions data
+            self.weather_label.text = historical_current_data_str
+        except requests.exceptions.RequestException as e:
+            self.weather_label.text = f"Failed to fetch historical current conditions data for {self.location}\n"
+            logging.error(f"Error fetching historical current conditions data for {self.location}: {e}")
 
     def fetch_weather_data(self):
         location_key = resorts[self.location]["accuweather_key"]
