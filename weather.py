@@ -98,22 +98,23 @@ class ResortScreen(BoxLayout):
         user_location = physical_address
         resort_data = resorts[self.location]
 
-        # Get the resort's address from the resorts dictionary
-        resort_address = resort_data.get("location")
+        # Get the resort's location from the resorts dictionary
+        resort_location = resort_data.get("location")
 
-        if resort_address is None:
+        if resort_location is None:
             self.traffic_info_label.text = f"No address data found for {self.location}."
             return
 
         # Create the route URL with the provided start and end points, and API key
-        route_url = f"http://dev.virtualearth.net/REST/V1/Routes/Driving"
+        route_url = "http://dev.virtualearth.net/REST/V1/Routes/Driving"
 
         try:
             params = {
                 "wp.0": user_location,
-                "wp.1": resort_address,
+                "wp.1": resort_location,
                 "avoid": "minimizeTolls",
                 "key": bing_maps_api_key,
+                "incidents": True  # Include traffic incidents in the response
             }
             response = requests.get(route_url, params=params)
             route_data = response.json()
@@ -123,14 +124,35 @@ class ResortScreen(BoxLayout):
                 travel_time_minutes = route_data["resourceSets"][0]["resources"][0]["travelDurationTraffic"] // 60
                 road_conditions = route_data["resourceSets"][0]["resources"][0]["trafficCongestion"]
 
-                # Display the traffic info for the specific resort
+                # Check for traffic incidents along the route
+                if "trafficIncidents" in route_data["resourceSets"][0]["resources"][0]:
+                    incidents = route_data["resourceSets"][0]["resources"][0]["trafficIncidents"]
+                    
+                    # Process and display the incidents data
+                    incidents_info_str = "Traffic Incidents:\n"
+                    for incident in incidents:
+                        incident_type = incident.get("type", "Unknown")
+                        description = incident.get("description", "No description")
+                        start = incident.get("start", "Unknown")
+                        end = incident.get("end", "Unknown")
+                        incidents_info_str += f"Incident Type: {incident_type}\n"
+                        incidents_info_str += f"Description: {description}\n"
+                        incidents_info_str += f"Start Time: {start}\n"
+                        incidents_info_str += f"End Time: {end}\n"
+                        incidents_info_str += "\n"
+                else:
+                    incidents_info_str = "No traffic incidents found along the route.\n"
+
+                # Display the traffic info for the specific resort, including any incidents
                 traffic_info_str = f"Travel Time to {self.location}: {travel_time_minutes} minutes\n"
                 traffic_info_str += f"Road Conditions: {road_conditions.capitalize()}\n"
+                traffic_info_str += incidents_info_str
                 self.traffic_info_label.text = traffic_info_str
             else:
                 self.traffic_info_label.text = f"No route data found for {self.location} using Bing Maps API."
         except requests.exceptions.RequestException as e:
             self.traffic_info_label.text = f"Error fetching traffic data for {self.location}: {e}"
+
 
     def fetch_historical_current_data(self):
         location_key = resorts[self.location]["accuweather_key"]
