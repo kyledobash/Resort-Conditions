@@ -69,8 +69,13 @@ class ResortScreen(BoxLayout):
 
         # Right column for Twitter embedded timeline
         right_layout = BoxLayout(orientation='vertical')
-        # Add Twitter feed iframe here
+        # Right column for traffic info (added)
+        self.traffic_info_label = Label(text="Fetching traffic info...")
+        right_layout.add_widget(self.traffic_info_label)
         content_layout.add_widget(right_layout)
+
+        # Fetch traffic info for the specific resort (added)
+        self.fetch_traffic_info()
 
         # Fetch both current conditions and 1-day daily forecasts (as before)
         self.fetch_historical_current_data()
@@ -83,6 +88,49 @@ class ResortScreen(BoxLayout):
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
+
+    def fetch_traffic_info(self):
+        # Fetch traffic info from the user's current location to the specific resort using the Bing Maps API
+        bing_maps_api_key = os.getenv("BING_MAPS_API_KEY")
+        physical_address = os.getenv("PHYSICAL_ADDRESS")
+
+        # Assuming the PHYSICAL_ADDRESS is a string containing the user's location
+        user_location = physical_address
+        resort_data = resorts[self.location]
+
+        # Get the resort's address from the resorts dictionary
+        resort_address = resort_data.get("location")
+
+        if resort_address is None:
+            self.traffic_info_label.text = f"No address data found for {self.location}."
+            return
+
+        # Create the route URL with the provided start and end points, and API key
+        route_url = f"http://dev.virtualearth.net/REST/V1/Routes/Driving"
+
+        try:
+            params = {
+                "wp.0": user_location,
+                "wp.1": resort_address,
+                "avoid": "minimizeTolls",
+                "key": bing_maps_api_key,
+            }
+            response = requests.get(route_url, params=params)
+            route_data = response.json()
+
+            if "resourceSets" in route_data and route_data["resourceSets"]:
+                # Extract traffic info here, e.g., estimated travel time, road conditions, etc.
+                travel_time_minutes = route_data["resourceSets"][0]["resources"][0]["travelDurationTraffic"] // 60
+                road_conditions = route_data["resourceSets"][0]["resources"][0]["trafficCongestion"]
+
+                # Display the traffic info for the specific resort
+                traffic_info_str = f"Travel Time to {self.location}: {travel_time_minutes} minutes\n"
+                traffic_info_str += f"Road Conditions: {road_conditions.capitalize()}\n"
+                self.traffic_info_label.text = traffic_info_str
+            else:
+                self.traffic_info_label.text = f"No route data found for {self.location} using Bing Maps API."
+        except requests.exceptions.RequestException as e:
+            self.traffic_info_label.text = f"Error fetching traffic data for {self.location}: {e}"
 
     def fetch_historical_current_data(self):
         location_key = resorts[self.location]["accuweather_key"]
