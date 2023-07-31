@@ -4,6 +4,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.scrollview import ScrollView
 import requests
 import os
 import logging
@@ -45,21 +46,15 @@ class ResortScreen(BoxLayout):
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
-        # # Two-column layout using BoxLayout
-        # content_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.8))
+        # # Two-column layout using GridLayout
+        # content_layout = GridLayout(cols=2, size_hint=(1, 0.8))
         # self.add_widget(content_layout)
-
-        # # Left column for weather data and forecast (as before)
-        # left_layout = BoxLayout(orientation='vertical')
-        # self.weather_label = Label(text="Fetching weather data...")
-        # left_layout.add_widget(self.weather_label)
-        # self.forecast_label = Label(text="Fetching forecast data...", markup=True)
-        # left_layout.add_widget(self.forecast_label)
-        # content_layout.add_widget(left_layout)
 
         # Two-column layout using GridLayout
         content_layout = GridLayout(cols=2, size_hint=(1, 0.8))
-        self.add_widget(content_layout)
+        scroll_view = ScrollView()
+        scroll_view.add_widget(content_layout)
+        self.add_widget(scroll_view)
 
         # Left column for weather data and forecast (as before)
         left_layout = BoxLayout(orientation='vertical')
@@ -68,9 +63,6 @@ class ResortScreen(BoxLayout):
         self.forecast_label = Label(text="Fetching forecast data...", markup=True)
         left_layout.add_widget(self.forecast_label)
         content_layout.add_widget(left_layout)
-
-        # # Right column for Twitter embedded timeline
-        # right_layout = BoxLayout(orientation='vertical')
 
         # Right column for Twitter embedded timeline
         right_layout = BoxLayout(orientation='vertical')
@@ -81,13 +73,6 @@ class ResortScreen(BoxLayout):
         self.fetch_historical_current_data()
         self.fetch_weather_data()
         self.fetch_forecast_data()
-
-        # # Bottom row with "Back to Menu" button (as before)
-        # bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
-        # back_button = Button(text="Back to Menu")
-        # back_button.bind(on_release=self.switch_to_main_menu)
-        # bottom_layout.add_widget(back_button)
-        # self.add_widget(bottom_layout)
 
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
