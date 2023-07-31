@@ -22,15 +22,18 @@ ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
 resorts = {
     "Brighton": {
         "accuweather_key": "1-28182_1_poi_al",   # Brighton Ski Resort, Utah
-        "twitter_handle": "brightonresort"
+        "twitter_handle": "brightonresort",
+        "location": "Brighton,UT"
     },
     "Snowbird": {
         "accuweather_key": "101347_poi",         # Snowbird Ski Resort, Utah
-        "twitter_handle": "snowbird"
+        "twitter_handle": "snowbird",
+        "location": "Snowbird,UT"
     },
     "Snowbasin": {
         "accuweather_key": "101346_poi",         # Snowbasin Ski Resort, Utah
-        "twitter_handle": "snowbasinresort"
+        "twitter_handle": "snowbasinresort",
+        "location": "Snowbasin,UT"
     }
 }
 
