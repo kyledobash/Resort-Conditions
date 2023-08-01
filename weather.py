@@ -59,12 +59,18 @@ class ResortScreen(BoxLayout):
         scroll_view.add_widget(content_layout)
         self.add_widget(scroll_view)
 
-        # Left column for weather data and forecast (as before)
+        # Left column for weather data and forecast
         left_layout = BoxLayout(orientation='vertical')
         self.weather_label = Label(text="Fetching weather data...")
         left_layout.add_widget(self.weather_label)
+
+        # New label for historical current data
+        self.historical_data_label = Label(text="Fetching historical current data...")
+        left_layout.add_widget(self.historical_data_label)
+
         self.forecast_label = Label(text="Fetching forecast data...", markup=True)
         left_layout.add_widget(self.forecast_label)
+
         content_layout.add_widget(left_layout)
 
         # Right column for Twitter embedded timeline
@@ -183,7 +189,7 @@ class ResortScreen(BoxLayout):
                 historical_current_data_str = f"Historical current conditions data not available for the past 24 hours in {self.location}\n"
 
             # Display historical current conditions data
-            self.weather_label.text = historical_current_data_str
+            self.historical_data_label.text = historical_current_data_str
         except requests.exceptions.RequestException as e:
             self.weather_label.text = f"Failed to fetch historical current conditions data for {self.location}\n"
             logging.error(f"Error fetching historical current conditions data for {self.location}: {e}")
