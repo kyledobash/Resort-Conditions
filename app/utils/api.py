@@ -153,3 +153,34 @@ def fetch_forecast_data(location_key):
             return f"Daily forecast data not available for {location_key}"
     except requests.exceptions.RequestException as e:
         return f"Error fetching forecast data for {location_key}: {e}"
+    
+def fetch_hourly_forecast_data(location_key):
+    # Fetch next 12-hour hourly forecast from AccuWeather using location key
+    ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+
+    hourly_forecast_params = {
+        "apikey": ACCUWEATHER_API_KEY,
+        "details": True,
+    }
+
+    try:
+        hourly_forecast_response = requests.get(f"http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/{location_key}", params=hourly_forecast_params)
+        hourly_forecast_data = hourly_forecast_response.json()
+
+        if isinstance(hourly_forecast_data, list) and len(hourly_forecast_data) >= 5:
+            # Extract and format the next 5 hourly forecast data for display
+            forecast_data_str = "Next 5-hour Hourly Forecast:\n"
+            for i in range(5):
+                data = hourly_forecast_data[i]
+                time_str = data.get("DateTime")
+                time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
+                hour_str = time.strftime("%H:%M")  # Extract hour part from time
+                temp = data.get("Temperature", {}).get("Value")
+                condition = data.get("IconPhrase")
+                forecast_data_str += f"{hour_str} - Temp: {temp}°F - Condition: {condition}\n"
+            return forecast_data_str
+        else:
+            return f"Hourly forecast data not available for {location_key}"
+    except requests.exceptions.RequestException as e:
+        return f"Error fetching hourly forecast data for {location_key}: {e}"
+

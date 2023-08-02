@@ -10,7 +10,7 @@ import logging
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
-from app.utils.api import fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
+from app.utils.api import fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
 from app.config.config import resorts
 
 # Set up logging
@@ -52,11 +52,22 @@ class ResortScreen(BoxLayout):
 
         content_layout.add_widget(left_layout)
 
-        # Right column for Twitter embedded timeline
+        # # Right column for Twitter embedded timeline
+        # right_layout = BoxLayout(orientation='vertical')
+        # # Right column for traffic info (added)
+        # self.traffic_info_label = Label(text="Fetching traffic info...")
+        # right_layout.add_widget(self.traffic_info_label)
+        # content_layout.add_widget(right_layout)
+
+        # Right column for traffic info and hourly forecast data (added)
         right_layout = BoxLayout(orientation='vertical')
-        # Right column for traffic info (added)
+
         self.traffic_info_label = Label(text="Fetching traffic info...")
         right_layout.add_widget(self.traffic_info_label)
+
+        self.hourly_forecast_label = Label(text="Fetching hourly forecast data...")
+        right_layout.add_widget(self.hourly_forecast_label)
+
         content_layout.add_widget(right_layout)
 
     def fetch_data(self):
@@ -65,6 +76,7 @@ class ResortScreen(BoxLayout):
         self.fetch_historical_current_data()
         self.fetch_weather_data()
         self.fetch_forecast_data()
+        self.fetch_hourly_forecast_data()
 
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
@@ -72,6 +84,12 @@ class ResortScreen(BoxLayout):
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
+
+    def fetch_hourly_forecast_data(self):
+        # Use the API method to fetch hourly forecast data
+        location_key = resorts[self.location]["accuweather_key"]
+        hourly_forecast_data = fetch_hourly_forecast_data(location_key)
+        self.hourly_forecast_label.text = hourly_forecast_data
 
     def fetch_traffic_info(self):
         # Use the API method to fetch traffic info
@@ -82,17 +100,20 @@ class ResortScreen(BoxLayout):
 
     def fetch_historical_current_data(self):
         # Use the API method to fetch historical current data
-        historical_current_data = fetch_historical_current_data(self.location)
+        location_key = resorts[self.location]["accuweather_key"]
+        historical_current_data = fetch_historical_current_data(location_key)
         self.historical_data_label.text = historical_current_data
 
     def fetch_weather_data(self):
         # Use the API method to fetch weather data
-        weather_data = fetch_weather_data(self.location)
+        location_key = resorts[self.location]["accuweather_key"]
+        weather_data = fetch_weather_data(location_key)
         self.weather_label.text = weather_data
 
     def fetch_forecast_data(self):
         # Use the API method to fetch forecast data
-        forecast_data = fetch_forecast_data(self.location)
+        location_key = resorts[self.location]["accuweather_key"]
+        forecast_data = fetch_forecast_data(location_key)
         self.forecast_label.text = forecast_data
 
     def switch_to_main_menu(self):
