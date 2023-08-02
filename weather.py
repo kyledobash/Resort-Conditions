@@ -59,10 +59,9 @@ class ResortScreen(BoxLayout):
         right_layout.add_widget(self.traffic_info_label)
         content_layout.add_widget(right_layout)
 
-        # Fetch traffic info for the specific resort (added)
+    def fetch_data(self):
+        # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
         self.fetch_traffic_info()
-
-        # Fetch both current conditions and 1-day daily forecasts using the API methods
         self.fetch_historical_current_data()
         self.fetch_weather_data()
         self.fetch_forecast_data()
@@ -114,6 +113,14 @@ class MainMenuScreen(BoxLayout):
 
     def switch_to_resort_screen(self, button):
         app = App.get_running_app()
+
+        # Get the instance of ResortScreen from the ScreenManager
+        resort_screen = app.root.get_screen(button.text).children[0]
+
+        # Fetch the data for the specific resort screen
+        resort_screen.fetch_data()
+
+        # Switch to the specific resort screen
         app.root.current = button.text
 
 class SkiResortWeatherApp(App):
