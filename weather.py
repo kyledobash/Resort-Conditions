@@ -116,7 +116,7 @@ class ResortScreen(BoxLayout):
         forecast_data = fetch_forecast_data(location_key)
         self.forecast_label.text = forecast_data
 
-    def switch_to_main_menu(self):
+    def switch_to_main_menu(self, instance):
         app = App.get_running_app()
         app.root.current = 'Main Menu'
 
