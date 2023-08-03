@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
+from kivy.properties import ObjectProperty
 import os
 import logging
 from dotenv import load_dotenv
@@ -20,6 +21,11 @@ logging.basicConfig(level=logging.DEBUG)
 load_dotenv()
 ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
 
+class CustomLabel(Label):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint_y = 1  # Set size_hint_y to 1 so that the label will always be at least as tall as the text
+
 class ResortScreen(BoxLayout):
     def __init__(self, location, **kwargs):
         super().__init__(**kwargs)
@@ -27,48 +33,56 @@ class ResortScreen(BoxLayout):
         self.location = location
 
         # Top row with resort name centered
-        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
-        resort_name_label = Label(text=f"[color=FFD700][b]{self.location}[/b][/color]", halign='center', valign='middle', markup=True)
+        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
+        resort_name_label = CustomLabel(text=f"[color=FFD700][b]{self.location}[/b][/color]", halign='center', valign='middle', markup=True)
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
-        # Two-column layout using GridLayout
-        content_layout = GridLayout(cols=2, size_hint=(1, 0.8))
-        scroll_view = ScrollView()
-        scroll_view.add_widget(content_layout)
+        # Scroll view to contain the data
+        scroll_view = ScrollView(do_scroll=True)
         self.add_widget(scroll_view)
 
-        # Left column for weather data and forecast
-        left_layout = BoxLayout(orientation='vertical')
-        self.weather_label = Label(text="Fetching weather data...")
-        left_layout.add_widget(self.weather_label)
+        # Main layout for all data sets
+        main_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing='10dp')
+        main_layout.bind(minimum_height=main_layout.setter('height'))
+        scroll_view.add_widget(main_layout)
 
-        # New label for historical current data
-        self.historical_data_label = Label(text="Fetching historical current data...")
-        left_layout.add_widget(self.historical_data_label)
+        # Traffic info container
+        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        self.traffic_info_label = CustomLabel(text="Fetching traffic info...")
+        traffic_info_container.add_widget(self.traffic_info_label)
+        main_layout.add_widget(traffic_info_container)
 
-        self.forecast_label = Label(text="Fetching forecast data...", markup=True)
-        left_layout.add_widget(self.forecast_label)
+        # Weather data container
+        weather_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        self.weather_label = CustomLabel(text="Fetching weather data...")
+        weather_data_container.add_widget(self.weather_label)
+        main_layout.add_widget(weather_data_container)
 
-        content_layout.add_widget(left_layout)
+        # Daily (forecast) data container
+        forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        self.forecast_label = CustomLabel(text="Fetching forecast data...", markup=True)
+        forecast_data_container.add_widget(self.forecast_label)
+        main_layout.add_widget(forecast_data_container)
 
-        # # Right column for Twitter embedded timeline
-        # right_layout = BoxLayout(orientation='vertical')
-        # # Right column for traffic info (added)
-        # self.traffic_info_label = Label(text="Fetching traffic info...")
-        # right_layout.add_widget(self.traffic_info_label)
-        # content_layout.add_widget(right_layout)
+        # Hourly forecast data container
+        hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...")
+        hourly_forecast_container.add_widget(self.hourly_forecast_label)
+        main_layout.add_widget(hourly_forecast_container)
 
-        # Right column for traffic info and hourly forecast data (added)
-        right_layout = BoxLayout(orientation='vertical')
+        # Historical data container
+        historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='300dp')
+        self.historical_data_label = CustomLabel(text="Fetching historical current data...")
+        historical_data_container.add_widget(self.historical_data_label)
+        main_layout.add_widget(historical_data_container)
 
-        self.traffic_info_label = Label(text="Fetching traffic info...")
-        right_layout.add_widget(self.traffic_info_label)
-
-        self.hourly_forecast_label = Label(text="Fetching hourly forecast data...")
-        right_layout.add_widget(self.hourly_forecast_label)
-
-        content_layout.add_widget(right_layout)
+        # Bottom row with "Back to Menu" button (as before)
+        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
+        back_button = Button(text="Back to Menu")
+        back_button.bind(on_release=self.switch_to_main_menu)
+        bottom_layout.add_widget(back_button)
+        self.add_widget(bottom_layout)
 
     def fetch_data(self):
         # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
@@ -77,13 +91,6 @@ class ResortScreen(BoxLayout):
         self.fetch_weather_data()
         self.fetch_forecast_data()
         self.fetch_hourly_forecast_data()
-
-        # Bottom row with "Back to Menu" button (as before)
-        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1))
-        back_button = Button(text="Back to Menu")
-        back_button.bind(on_release=self.switch_to_main_menu)
-        bottom_layout.add_widget(back_button)
-        self.add_widget(bottom_layout)
 
     def fetch_hourly_forecast_data(self):
         # Use the API method to fetch hourly forecast data
@@ -103,6 +110,8 @@ class ResortScreen(BoxLayout):
         location_key = resorts[self.location]["accuweather_key"]
         historical_current_data = fetch_historical_current_data(location_key)
         self.historical_data_label.text = historical_current_data
+        self.historical_data_label.texture_update()  # Update the texture to calculate the new size
+        self.historical_data_label.height = self.historical_data_label.texture_size[1]  # Update the height
 
     def fetch_weather_data(self):
         # Use the API method to fetch weather data

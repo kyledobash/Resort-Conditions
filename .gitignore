@@ -18,3 +18,8 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+
+# DS Store
+.DS_Store
+app/.DS_Store
+
