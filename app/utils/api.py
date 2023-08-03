@@ -184,3 +184,24 @@ def fetch_hourly_forecast_data(location_key):
     except requests.exceptions.RequestException as e:
         return f"Error fetching hourly forecast data for {location_key}: {e}"
 
+def fetch_resort_data(resort_slug):
+    # Fetch resort data from X Rapid Ski API using the given resort_slug
+    RAPIDAPI_KEY = os.getenv("SKI_API_KEY")
+
+    headers = {
+        'X-RapidAPI-Key': RAPIDAPI_KEY,
+        'X-RapidAPI-Host': 'ski-resorts-and-conditions.p.rapidapi.com'
+    }
+
+    url = f'https://ski-resorts-and-conditions.p.rapidapi.com/v1/resort/{resort_slug}'
+
+    try:
+        response = requests.get(url, headers=headers)
+        resort_data = response.json()
+
+        if 'data' in resort_data:
+            return resort_data['data']
+        else:
+            return f"Resort data not available for {resort_slug}"
+    except requests.exceptions.RequestException as e:
+        return f"Error fetching resort data for {resort_slug}: {e}"

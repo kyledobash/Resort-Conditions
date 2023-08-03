@@ -5,13 +5,13 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
-from kivy.properties import ObjectProperty
 import os
 import logging
+from datetime import datetime
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
-from app.utils.api import fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
+from app.utils.api import fetch_resort_data, fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
 from app.config.config import resorts
 
 # Set up logging
@@ -47,8 +47,14 @@ class ResortScreen(BoxLayout):
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
+        # Resort data container
+        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
+        self.resort_data_label = CustomLabel(text="Fetching resort data...")
+        resort_data_container.add_widget(self.resort_data_label)
+        main_layout.add_widget(resort_data_container)
+
         # Traffic info container
-        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
         self.traffic_info_label = CustomLabel(text="Fetching traffic info...")
         traffic_info_container.add_widget(self.traffic_info_label)
         main_layout.add_widget(traffic_info_container)
@@ -91,6 +97,19 @@ class ResortScreen(BoxLayout):
         self.fetch_weather_data()
         self.fetch_forecast_data()
         self.fetch_hourly_forecast_data()
+        self.fetch_resort_data()
+
+    def fetch_resort_data(self):
+        # Use the API method to fetch resort data
+        resort_slug = resorts[self.location]["resort_slug"]
+        resort_data = fetch_resort_data(resort_slug)
+
+        # Format and update the resort data label
+        lifts_status = resort_data.get('lifts', {}).get('status', {})
+        lifts_open = [lift for lift, status in lifts_status.items() if status == 'open']
+        lifts_open_str = ', '.join(lifts_open)
+        conditions = resort_data.get('conditions', {})
+        self.resort_data_label.text = f"Lifts Open: {lifts_open_str}\nConditions: Base {conditions.get('base', 0)} cm, Season Total {conditions.get('season', 0)} cm"
 
     def fetch_hourly_forecast_data(self):
         # Use the API method to fetch hourly forecast data
