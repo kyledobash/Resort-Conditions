@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
+from PIL import Image as PilImage, ImageSequence
 import os
 import logging
 from datetime import datetime
@@ -83,6 +84,11 @@ class ResortScreen(BoxLayout):
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
+        # Roadcams container
+        self.roadcams_container = BoxLayout(orientation='vertical', size_hint_y=None, height='300dp')
+        self.roadcams_widgets = []  # Store references to the roadcam images
+        main_layout.add_widget(self.roadcams_container)
+
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
         back_button = Button(text="Back to Menu")
@@ -102,7 +108,11 @@ class ResortScreen(BoxLayout):
     def fetch_resort_data(self):
         # Use the API method to fetch resort data
         resort_slug = resorts[self.location]["resort_slug"]
-        resort_data = fetch_resort_data(resort_slug)
+        resort_data = fetch_resort_data(resort_slug)  # Renamed the variable to avoid conflict
+
+        if resort_data is None:
+            self.resort_data_label.text = f"Resort data not available for {self.location}"
+            return
 
         # Format and update the resort data label
         lifts_status = resort_data.get('lifts', {}).get('status', {})
@@ -110,6 +120,7 @@ class ResortScreen(BoxLayout):
         lifts_open_str = ', '.join(lifts_open)
         conditions = resort_data.get('conditions', {})
         self.resort_data_label.text = f"Lifts Open: {lifts_open_str}\nConditions: Base {conditions.get('base', 0)} cm, Season Total {conditions.get('season', 0)} cm"
+
 
     def fetch_hourly_forecast_data(self):
         # Use the API method to fetch hourly forecast data

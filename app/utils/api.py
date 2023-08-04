@@ -1,8 +1,7 @@
 # app/utils/api.py
 import os
 import requests
-import datetime
-from dotenv import load_dotenv
+from datetime import datetime
 
 def fetch_traffic_info(user_location, resort_location):
     # Fetch traffic info from the user's current location to the specific resort using the Bing Maps API
@@ -202,6 +201,6 @@ def fetch_resort_data(resort_slug):
         if 'data' in resort_data:
             return resort_data['data']
         else:
-            return f"Resort data not available for {resort_slug}"
-    except requests.exceptions.RequestException as e:
-        return f"Error fetching resort data for {resort_slug}: {e}"
+            return None  # Resort data not available
+    except requests.exceptions.RequestException:
+        return None  # Error fetching resort data
