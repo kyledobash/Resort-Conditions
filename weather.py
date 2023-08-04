@@ -5,10 +5,10 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
-from PIL import Image as PilImage, ImageSequence
+from urllib.parse import quote
+import webbrowser
 import os
 import logging
-from datetime import datetime
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
@@ -28,10 +28,11 @@ class CustomLabel(Label):
         self.size_hint_y = 1  # Set size_hint_y to 1 so that the label will always be at least as tall as the text
 
 class ResortScreen(BoxLayout):
-    def __init__(self, location, **kwargs):
+    def __init__(self, location, twitter_handle, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.location = location
+        self.twitter_handle = twitter_handle
 
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
@@ -44,7 +45,7 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing='10dp')
+        main_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing='15dp')
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
@@ -79,15 +80,11 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(hourly_forecast_container)
 
         # Historical data container
-        historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='300dp')
+        historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='500dp')
         self.historical_data_label = CustomLabel(text="Fetching historical current data...")
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
-        # Roadcams container
-        self.roadcams_container = BoxLayout(orientation='vertical', size_hint_y=None, height='300dp')
-        self.roadcams_widgets = []  # Store references to the roadcam images
-        main_layout.add_widget(self.roadcams_container)
 
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
@@ -95,6 +92,11 @@ class ResortScreen(BoxLayout):
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
+
+        # Twitter button
+        twitter_button = Button(text=f"{location} Twitter Feed")
+        twitter_button.bind(on_release=self.open_twitter_embed)
+        bottom_layout.add_widget(twitter_button)
 
     def fetch_data(self):
         # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
@@ -155,6 +157,13 @@ class ResortScreen(BoxLayout):
         forecast_data = fetch_forecast_data(location_key)
         self.forecast_label.text = forecast_data
 
+    def open_twitter_embed(self, *args):
+        # Construct the Twitter URL based on the resort's Twitter handle
+        twitter_url = f"https://twitter.com/{self.twitter_handle}?ref_src=twsrc%5Etfw"
+
+        # Open the Twitter URL in the web browser
+        webbrowser.open(twitter_url)
+
     def switch_to_main_menu(self, instance):
         app = App.get_running_app()
         app.root.current = 'Main Menu'
@@ -193,9 +202,9 @@ class SkiResortWeatherApp(App):
         self.screen_manager.add_widget(main_menu_screen)
 
         # Add resort-specific screens
-        for location, _ in resorts.items():
+        for location, resort_data in resorts.items():
             resort_screen = Screen(name=location)
-            resort_screen.add_widget(ResortScreen(location))
+            resort_screen.add_widget(ResortScreen(location, resort_data["twitter_handle"]))
             self.screen_manager.add_widget(resort_screen)
 
         return self.screen_manager

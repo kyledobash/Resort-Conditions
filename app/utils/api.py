@@ -1,7 +1,7 @@
 # app/utils/api.py
 import os
 import requests
-from datetime import datetime
+import datetime
 
 def fetch_traffic_info(user_location, resort_location):
     # Fetch traffic info from the user's current location to the specific resort using the Bing Maps API
