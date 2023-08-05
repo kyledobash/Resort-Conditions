@@ -2,6 +2,9 @@
 import os
 import requests
 import datetime
+from PIL import Image
+from io import BytesIO
+
 
 def fetch_traffic_info(user_location, resort_location):
     # Fetch traffic info from the user's current location to the specific resort using the Bing Maps API
@@ -204,3 +207,20 @@ def fetch_resort_data(resort_slug):
             return None  # Resort data not available
     except requests.exceptions.RequestException:
         return None  # Error fetching resort data
+    
+def fetch_roadcam_images(resort_name, roadcams):
+    print(f"Fetching roadcam images for {resort_name}...")
+    
+    for idx, roadcam_url in enumerate(roadcams, start=1):
+        response = requests.get(roadcam_url)
+        
+        if response.status_code == 200:
+            image_data = response.content
+            image = Image.open(BytesIO(image_data))
+            
+            image_filename = f"{resort_name.lower()}_roadcam_{idx}.jpg"
+            image_path = os.path.join("roadcam_images", image_filename)
+            image.save(image_path)
+            print(f"  Roadcam {idx} image saved: {image_path}")
+        else:
+            print(f"  Error fetching roadcam {idx} image")
