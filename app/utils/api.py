@@ -76,10 +76,10 @@ def fetch_historical_current_data(location_key):
             for data in historical_current_data:
                 time_str = data.get("LocalObservationDateTime")
                 time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
-                hour_str = time.strftime("%H:%M")  # Extract hour part from time
+                formatted_time = time.strftime("%b %d %H:%M")  # Format: Month Day Hour:Minute
                 temp = data.get("Temperature", {}).get("Imperial", {}).get("Value")
                 condition = data.get("WeatherText")
-                historical_current_data_str += f"{hour_str} - Temp: {temp}°F - Condition: {condition}\n"
+                historical_current_data_str += f"{formatted_time} - Temp: {temp}°F - Condition: {condition}\n"
             return historical_current_data_str
         else:
             return f"Historical current conditions data not available for the past 24 hours in {location_key}"
