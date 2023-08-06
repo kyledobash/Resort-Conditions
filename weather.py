@@ -12,7 +12,7 @@ import logging
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
-from app.utils.api import fetch_resort_data, fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
+from app.utils.api import fetch_roadcam_images_from_api, fetch_resort_data, fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
 from app.config.config import resorts
 
 # Set up logging
@@ -28,11 +28,12 @@ class CustomLabel(Label):
         self.size_hint_y = 1  # Set size_hint_y to 1 so that the label will always be at least as tall as the text
 
 class ResortScreen(BoxLayout):
-    def __init__(self, location, twitter_handle, **kwargs):
+    def __init__(self, location, twitter_handle, roadcam_img_src_urls, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.location = location
         self.twitter_handle = twitter_handle
+        self.roadcam_img_src_urls = roadcam_img_src_urls
 
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
@@ -85,6 +86,11 @@ class ResortScreen(BoxLayout):
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
+        # Create the roadcam images container and label
+        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None, height='1500dp')
+        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...")
+        self.roadcam_images_container.add_widget(self.roadcam_images_label)
+        main_layout.add_widget(self.roadcam_images_container)
 
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
@@ -106,6 +112,7 @@ class ResortScreen(BoxLayout):
         self.fetch_forecast_data()
         self.fetch_hourly_forecast_data()
         self.fetch_resort_data()
+        self.fetch_roadcam_images()
 
     def fetch_resort_data(self):
         # Use the API method to fetch resort data
@@ -129,6 +136,19 @@ class ResortScreen(BoxLayout):
         location_key = resorts[self.location]["accuweather_key"]
         hourly_forecast_data = fetch_hourly_forecast_data(location_key)
         self.hourly_forecast_label.text = hourly_forecast_data
+
+    def fetch_roadcam_images(self):
+        # Use the API method to fetch roadcam images
+        roadcam_img_src_urls = self.roadcam_img_src_urls
+        roadcam_images = fetch_roadcam_images_from_api(roadcam_img_src_urls)
+
+        if roadcam_images:
+            for img_widget in roadcam_images:
+                self.roadcam_images_container.add_widget(img_widget)
+            self.roadcam_images_container.remove_widget(self.roadcam_images_label)  # Remove the "Fetching Roadcam Images..." label
+        else:
+            self.roadcam_images_label.text = "No Roadcam Images Available"
+
 
     def fetch_traffic_info(self):
         # Use the API method to fetch traffic info
@@ -203,8 +223,9 @@ class SkiResortWeatherApp(App):
 
         # Add resort-specific screens
         for location, resort_data in resorts.items():
+            roadcam_img_src_urls = resort_data.get("roadcam_img_src_urls", [])
             resort_screen = Screen(name=location)
-            resort_screen.add_widget(ResortScreen(location, resort_data["twitter_handle"]))
+            resort_screen.add_widget(ResortScreen(location, resort_data["twitter_handle"], roadcam_img_src_urls=roadcam_img_src_urls))
             self.screen_manager.add_widget(resort_screen)
 
         return self.screen_manager

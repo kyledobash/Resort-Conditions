@@ -2,8 +2,12 @@
 import os
 import requests
 import datetime
-from PIL import Image
+import httpx
+from bs4 import BeautifulSoup
+from kivy.uix.image import AsyncImage
+from PIL import Image as PilImage
 from io import BytesIO
+from kivy.uix.image import Image
 
 
 def fetch_traffic_info(user_location, resort_location):
@@ -207,20 +211,23 @@ def fetch_resort_data(resort_slug):
             return None  # Resort data not available
     except requests.exceptions.RequestException:
         return None  # Error fetching resort data
-    
-def fetch_roadcam_images(resort_name, roadcams):
-    print(f"Fetching roadcam images for {resort_name}...")
-    
-    for idx, roadcam_url in enumerate(roadcams, start=1):
-        response = requests.get(roadcam_url)
-        
-        if response.status_code == 200:
-            image_data = response.content
-            image = Image.open(BytesIO(image_data))
-            
-            image_filename = f"{resort_name.lower()}_roadcam_{idx}.jpg"
-            image_path = os.path.join("roadcam_images", image_filename)
-            image.save(image_path)
-            print(f"  Roadcam {idx} image saved: {image_path}")
-        else:
-            print(f"  Error fetching roadcam {idx} image")
+
+def fetch_roadcam_images_from_api(roadcam_img_src_urls):
+    # roadcam_img_src_urls = resort_object["roadcam_img_src_urls"]
+
+    img_widgets = []
+    for img_src_url in roadcam_img_src_urls:
+        try:
+            # Fetch the image using requests
+            response = requests.get(img_src_url, verify=False)  # Disable SSL verification
+            response.raise_for_status()
+            print(response)
+
+            # Create an AsyncImage widget for each image source
+            img_widget = AsyncImage(source=img_src_url)
+            img_widgets.append(img_widget)
+
+        except requests.exceptions.RequestException as e:
+            print("Error fetching image:", e)
+
+    return img_widgets
