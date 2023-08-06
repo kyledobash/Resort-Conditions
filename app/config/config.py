@@ -7,7 +7,8 @@ resorts = {
         "twitter_handle": "brightonresort",
         "location": "Brighton,UT",
         "resort_slug": "brighton",
-        "roadcams": [
+        "roadcam_webpage_url": "https://cottonwoodcanyons.udot.utah.gov/canyon-road-information/",
+        "roadcam_img_src_urls": [
             "http://www.udottraffic.utah.gov/AnimatedGifs/100033.gif",
             "https://udottraffic.utah.gov/1_devices/aux14605.jpeg",
             "https://udottraffic.utah.gov/1_devices/aux16212.jpeg",
@@ -23,7 +24,8 @@ resorts = {
         "twitter_handle": "snowbird",
         "location": "Snowbird,UT",
         "resort_slug": "snowbird",
-        "roadcams": [
+        "roadcam_webpage_url": "https://cottonwoodcanyons.udot.utah.gov/canyon-road-information/",
+        "roadcam_img_src_urls": [
             "http://www.udottraffic.utah.gov/AnimatedGifs/100032.gif",
             "https://udottraffic.utah.gov/1_devices/aux14604.jpeg",
             "https://udottraffic.utah.gov/1_devices/aux16265.jpeg",
@@ -39,9 +41,10 @@ resorts = {
         "twitter_handle": "snowbasinresort",
         "location": "Snowbasin,UT",
         "resort_slug": "snowbasin",
-        "roadcams": [
+        "roadcam_webpage_url": "http://udottraffic.utah.gov/",
+        "roadcam_img_src_urls": [
             "http://udottraffic.utah.gov/1_devices/RWIS%20SR-167%20TrappersLoop.gif",
-            "http://url-to-roadcam2.gif"
+            "http://udottraffic.utah.gov/1_devices/SR-226-all.gif"
         ]
     }
 }
