@@ -9,6 +9,7 @@ from urllib.parse import quote
 import webbrowser
 import os
 import logging
+import geocoder
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
@@ -21,6 +22,10 @@ logging.basicConfig(level=logging.DEBUG)
 # Load environment variables from .env
 load_dotenv()
 ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+
+# Get user's physical location
+user_lat_lng = geocoder.ip('me').latlng
+user_lat_lng_string = '{},{}'.format(user_lat_lng[0], user_lat_lng[1])
 
 class CustomLabel(Label):
     def __init__(self, **kwargs):
@@ -149,11 +154,10 @@ class ResortScreen(BoxLayout):
         else:
             self.roadcam_images_label.text = "No Roadcam Images Available"
 
-
     def fetch_traffic_info(self):
         # Use the API method to fetch traffic info
         resort_location = resorts[self.location]["location"]
-        user_location = os.getenv("PHYSICAL_ADDRESS")  # Use the PHYSICAL_ADDRESS from config.py as the user's location
+        user_location = os.getenv(user_lat_lng_string)  # Use the PHYSICAL_ADDRESS from config.py as the user's location
         traffic_info = fetch_traffic_info(user_location, resort_location)
         self.traffic_info_label.text = traffic_info
 
