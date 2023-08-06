@@ -44,7 +44,9 @@ resorts = {
         "roadcam_webpage_url": "http://udottraffic.utah.gov/",
         "roadcam_img_src_urls": [
             "http://udottraffic.utah.gov/1_devices/RWIS%20SR-167%20TrappersLoop.gif",
-            "http://udottraffic.utah.gov/1_devices/SR-226-all.gif"
+            "http://udottraffic.utah.gov/1_devices/SR-226-all.gif",
+            "http://udottraffic.utah.gov/1_devices/I-84-mp-92.jpeg",
+            "http://udottraffic.utah.gov/1_devices/aux17617.jpeg"
         ]
     }
 }

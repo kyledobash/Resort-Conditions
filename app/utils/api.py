@@ -8,6 +8,7 @@ from kivy.uix.image import AsyncImage
 from PIL import Image as PilImage
 from io import BytesIO
 from kivy.uix.image import Image
+from datetime import datetime, timedelta
 
 
 def fetch_traffic_info(user_location, resort_location):
@@ -61,6 +62,70 @@ def fetch_traffic_info(user_location, resort_location):
             return f"No route data found for {resort_location} using Bing Maps API."
     except requests.exceptions.RequestException as e:
         return f"Error fetching traffic data for {resort_location}: {e}"
+
+# new method fetching additional data
+# def fetch_traffic_info(user_location, resort_location):
+#     # Fetch traffic info from the user's current location to the specific resort using the Bing Maps API
+#     bing_maps_api_key = os.getenv("BING_MAPS_API_KEY")
+
+#     # Create the route URL with the provided start and end points, and API key
+#     route_url = "http://dev.virtualearth.net/REST/V1/Routes/Driving"
+
+#     try:
+#         params = {
+#             "wp.0": user_location,
+#             "wp.1": resort_location,
+#             "avoid": "minimizeTolls",
+#             "key": bing_maps_api_key,
+#             "incidents": True  # Include traffic incidents in the response
+#         }
+#         response = requests.get(route_url, params=params)
+#         route_data = response.json()
+
+#         if "resourceSets" in route_data and route_data["resourceSets"]:
+#             # Extract traffic info here, e.g., estimated travel time, road conditions, etc.
+#             travel_time_minutes = route_data["resourceSets"][0]["resources"][0]["travelDurationTraffic"] // 60
+#             road_conditions = route_data["resourceSets"][0]["resources"][0]["trafficCongestion"]
+
+#             # Check for traffic incidents along the route
+#             if "trafficIncidents" in route_data["resourceSets"][0]["resources"][0]:
+#                 incidents = route_data["resourceSets"][0]["resources"][0]["trafficIncidents"]
+                
+#                 # Process and display the incidents data
+#                 incidents_info_str = "Traffic Incidents:\n"
+#                 for incident in incidents:
+#                     incident_type = incident.get("type", "Unknown")
+#                     description = incident.get("description", "No description")
+#                     start = incident.get("start", "Unknown")
+#                     end = incident.get("end", "Unknown")
+#                     incidents_info_str += f"Incident Type: {incident_type}\n"
+#                     incidents_info_str += f"Description: {description}\n"
+#                     incidents_info_str += f"Start Time: {start}\n"
+#                     incidents_info_str += f"End Time: {end}\n"
+#                     incidents_info_str += "\n"
+#             else:
+#                 incidents_info_str = "No traffic incidents found along the route.\n"
+
+#             # Calculate estimated arrival time
+#             current_time = datetime.now()
+#             arrival_time = current_time + timedelta(minutes=travel_time_minutes)
+
+#             # Get traffic severity
+#             traffic_severity = route_data["resourceSets"][0]["resources"][0]["trafficSeverity"]
+
+#             # Display the traffic info for the specific resort, including any incidents
+#             traffic_info_str = f"Travel Time to {resort_location}: {travel_time_minutes} minutes\n"
+#             traffic_info_str += f"Estimated Arrival Time: {arrival_time.strftime('%H:%M')}\n"
+#             traffic_info_str += f"Road Conditions: {road_conditions.capitalize()}\n"
+#             traffic_info_str += f"Traffic Severity: {traffic_severity.capitalize()}\n"
+#             traffic_info_str += incidents_info_str
+
+#             return traffic_info_str
+#         else:
+#             return f"No route data found for {resort_location} using Bing Maps API."
+#     except requests.exceptions.RequestException as e:
+#         return f"Error fetching traffic data for {resort_location}: {e}"
+
 
 def fetch_historical_current_data(location_key):
     # Fetch historical current conditions for the past 24 hours from AccuWeather using location key
