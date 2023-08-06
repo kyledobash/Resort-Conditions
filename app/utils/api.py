@@ -2,8 +2,6 @@
 import os
 import requests
 import datetime
-import httpx
-from bs4 import BeautifulSoup
 from kivy.uix.image import AsyncImage
 from PIL import Image as PilImage
 from io import BytesIO
