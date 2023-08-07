@@ -1,10 +1,5 @@
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.uix.scrollview import ScrollView
-import webbrowser
-import os
 import logging
 from dotenv import load_dotenv
 
@@ -19,36 +14,13 @@ from app.utils.geolocation import get_user_location
 
 # Import Screens
 from app.screens.resort_screen import ResortScreen
+from app.screens.main_menu_screen import MainMenuScreen
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
 # Load environment variables from .env
 load_dotenv()
-
-class MainMenuScreen(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = 'vertical'
-
-        # Create buttons for each resort
-        for location, _ in resorts.items():
-            button = Button(text=location)
-            button.bind(on_release=self.switch_to_resort_screen)
-            button.resort_location = resorts[location]['location']
-            self.add_widget(button)
-
-    def switch_to_resort_screen(self, button):
-        app = App.get_running_app()
-
-        # Get the instance of ResortScreen from the ScreenManager
-        resort_screen = app.root.get_screen(button.text).children[0]
-
-        # Fetch the data for the specific resort screen
-        resort_screen.fetch_data()
-
-        # Switch to the specific resort screen
-        app.root.current = button.text
 
 class SkiResortWeatherApp(App):
     def build(self):
