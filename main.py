@@ -40,6 +40,9 @@ class SkiResortWeatherApp(App):
 
         self.adjust_root_width(self.screen_manager, 800)  # Call the adjust_root_width method with the desired width
 
+        # Set the title of the app window
+        self.title = 'Resort Conditions'  # Change the title here
+
         return self.screen_manager
     
     def adjust_root_width(self, instance, width):
