@@ -1,20 +1,25 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
-from urllib.parse import quote
 import webbrowser
 import os
 import logging
-import geocoder
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
-from app.utils.api import fetch_roadcam_images_from_api, fetch_resort_data, fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
+from app.utils.api import (
+    fetch_roadcam_images_from_api,
+    fetch_resort_data,
+    fetch_hourly_forecast_data,
+    fetch_weather_data,
+    fetch_forecast_data,
+    fetch_traffic_info,
+    fetch_historical_current_data,
+)
 from app.config.config import resorts
+from app.utils.geolocation import get_user_location
 
 # import custom label
 from app.widgets.label import CustomLabel
@@ -24,11 +29,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Load environment variables from .env
 load_dotenv()
-ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
-
-# Get user's physical location
-user_lat_lng = geocoder.ip('me').latlng
-user_lat_lng_string = '{},{}'.format(user_lat_lng[0], user_lat_lng[1])
 
 class ResortScreen(BoxLayout):
     def __init__(self, location, twitter_handle, roadcam_img_src_urls, **kwargs):
@@ -234,5 +234,6 @@ class SkiResortWeatherApp(App):
     
 
 if __name__ == '__main__':
+    user_lat_lng_string = get_user_location()
     app = SkiResortWeatherApp()
     app.run()
