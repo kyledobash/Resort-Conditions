@@ -2,6 +2,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
+from kivy.core.window import Window
 from kivy.app import App
 import webbrowser
 
@@ -71,10 +72,13 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(historical_data_container)
 
         # Create the roadcam images container and label
-        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None, height='1500dp')
+        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None)
         self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...")
         self.roadcam_images_container.add_widget(self.roadcam_images_label)
         main_layout.add_widget(self.roadcam_images_container)
+
+        # Bind the width property of main_layout to adjust its width dynamically
+        main_layout.bind(width=self.adjust_main_layout_width)
 
         # Bottom row with "Back to Menu" button (as before)
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
@@ -87,6 +91,9 @@ class ResortScreen(BoxLayout):
         twitter_button = Button(text=f"{location} Twitter Feed")
         twitter_button.bind(on_release=self.open_twitter_embed)
         bottom_layout.add_widget(twitter_button)
+
+    def adjust_main_layout_width(self, instance, width):
+        self.width = width
 
     def fetch_data(self):
         # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
@@ -127,6 +134,14 @@ class ResortScreen(BoxLayout):
         roadcam_images = api.fetch_roadcam_images_from_api(roadcam_img_src_urls)
 
         if roadcam_images:
+            num_images = len(roadcam_images)
+            aspect_ratio = 16 / 9  # Desired aspect ratio of the images
+
+            # Calculate the height based on the number of images and aspect ratio
+            container_height = f"{num_images * 100 * aspect_ratio}dp"
+
+            self.roadcam_images_container.height = container_height
+
             for img_widget in roadcam_images:
                 self.roadcam_images_container.add_widget(img_widget)
             self.roadcam_images_container.remove_widget(self.roadcam_images_label)  # Remove the "Fetching Roadcam Images..." label

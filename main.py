@@ -38,7 +38,12 @@ class SkiResortWeatherApp(App):
             resort_screen.add_widget(ResortScreen(location, resort_data["twitter_handle"], roadcam_img_src_urls=roadcam_img_src_urls))
             self.screen_manager.add_widget(resort_screen)
 
+        self.adjust_root_width(self.screen_manager, 800)  # Call the adjust_root_width method with the desired width
+
         return self.screen_manager
+    
+    def adjust_root_width(self, instance, width):
+        instance.width = width
     
 
 if __name__ == '__main__':
