@@ -16,6 +16,9 @@ from dotenv import load_dotenv
 from app.utils.api import fetch_roadcam_images_from_api, fetch_resort_data, fetch_hourly_forecast_data, fetch_weather_data, fetch_forecast_data, fetch_traffic_info, fetch_historical_current_data
 from app.config.config import resorts
 
+# import custom label
+from app.widgets.label import CustomLabel
+
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -26,11 +29,6 @@ ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
 # Get user's physical location
 user_lat_lng = geocoder.ip('me').latlng
 user_lat_lng_string = '{},{}'.format(user_lat_lng[0], user_lat_lng[1])
-
-class CustomLabel(Label):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint_y = 1  # Set size_hint_y to 1 so that the label will always be at least as tall as the text
 
 class ResortScreen(BoxLayout):
     def __init__(self, location, twitter_handle, roadcam_img_src_urls, **kwargs):
