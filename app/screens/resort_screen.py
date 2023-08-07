@@ -21,8 +21,8 @@ class ResortScreen(BoxLayout):
         self.roadcam_img_src_urls = roadcam_img_src_urls
 
         # Top row with resort name centered
-        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
-        resort_name_label = CustomLabel(text=f"[color=FFD700][b]{self.location}[/b][/color]", halign='center', valign='middle', markup=True)
+        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp', padding='10dp')
+        resort_name_label = CustomLabel(text=f"[color=DodgerBlue][b][size=24]{self.location}[/size][/b][/color]", halign='center', valign='middle', markup=True)
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
@@ -31,49 +31,49 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=1, spacing='15dp', size_hint_y=None)
+        main_layout = GridLayout(cols=1, spacing='15dp', size_hint_y=None, padding='10dp')
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
         # Resort data container
         resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
-        self.resort_data_label = CustomLabel(text="Fetching resort data...")
+        self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp')
         resort_data_container.add_widget(self.resort_data_label)
         main_layout.add_widget(resort_data_container)
 
         # Traffic info container
         traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
-        self.traffic_info_label = CustomLabel(text="Fetching traffic info...")
+        self.traffic_info_label = CustomLabel(text="Fetching traffic info...", font_size='18sp')
         traffic_info_container.add_widget(self.traffic_info_label)
         main_layout.add_widget(traffic_info_container)
 
         # Weather data container
         weather_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
-        self.weather_label = CustomLabel(text="Fetching weather data...")
+        self.weather_label = CustomLabel(text="Fetching weather data...", font_size='18sp')
         weather_data_container.add_widget(self.weather_label)
         main_layout.add_widget(weather_data_container)
 
         # Daily (forecast) data container
         forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
-        self.forecast_label = CustomLabel(text="Fetching forecast data...", markup=True)
+        self.forecast_label = CustomLabel(text="Fetching forecast data...", font_size='18sp', markup=True)
         forecast_data_container.add_widget(self.forecast_label)
         main_layout.add_widget(forecast_data_container)
 
         # Hourly forecast data container
         hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
-        self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...")
+        self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...", font_size='18sp')
         hourly_forecast_container.add_widget(self.hourly_forecast_label)
         main_layout.add_widget(hourly_forecast_container)
 
         # Historical data container
         historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='500dp')
-        self.historical_data_label = CustomLabel(text="Fetching historical current data...")
+        self.historical_data_label = CustomLabel(text="Fetching historical current data...", font_size='18sp')
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
         # Create the roadcam images container and label
         self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None)
-        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...")
+        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp')
         self.roadcam_images_container.add_widget(self.roadcam_images_label)
         main_layout.add_widget(self.roadcam_images_container)
 
@@ -81,14 +81,14 @@ class ResortScreen(BoxLayout):
         main_layout.bind(width=self.adjust_main_layout_width)
 
         # Bottom row with "Back to Menu" button (as before)
-        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
-        back_button = Button(text="Back to Menu")
+        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp', padding='10dp')
+        back_button = Button(text="Back to Menu", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
         self.add_widget(bottom_layout)
 
         # Twitter button
-        twitter_button = Button(text=f"{location} Twitter Feed")
+        twitter_button = Button(text=f"{location} Twitter Feed", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
         twitter_button.bind(on_release=self.open_twitter_embed)
         bottom_layout.add_widget(twitter_button)
 
