@@ -1,9 +1,9 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 import webbrowser
-import os
 
 from app.widgets.label import CustomLabel
 from app.utils import api
@@ -30,7 +30,7 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = BoxLayout(orientation='vertical', size_hint_y=None, spacing='15dp')
+        main_layout = GridLayout(cols=1, spacing='15dp', size_hint_y=None)
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
