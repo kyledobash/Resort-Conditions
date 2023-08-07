@@ -9,19 +9,15 @@ import logging
 from dotenv import load_dotenv
 
 # Import necessary functions from app.utils.api.py
-from app.utils.api import (
-    fetch_roadcam_images_from_api,
-    fetch_resort_data,
-    fetch_hourly_forecast_data,
-    fetch_weather_data,
-    fetch_forecast_data,
-    fetch_traffic_info,
-    fetch_historical_current_data,
-)
+from app.utils import api
+
+# Import Resort Dictionary
 from app.config.config import resorts
+
+# Import geolocation
 from app.utils.geolocation import get_user_location
 
-# import custom label
+# Import Custom Label
 from app.widgets.label import CustomLabel
 
 # Set up logging
@@ -120,7 +116,7 @@ class ResortScreen(BoxLayout):
     def fetch_resort_data(self):
         # Use the API method to fetch resort data
         resort_slug = resorts[self.location]["resort_slug"]
-        resort_data = fetch_resort_data(resort_slug)  # Renamed the variable to avoid conflict
+        resort_data = api.fetch_resort_data(resort_slug)  # Renamed the variable to avoid conflict
 
         if resort_data is None:
             self.resort_data_label.text = f"Resort data not available for {self.location}"
@@ -137,13 +133,13 @@ class ResortScreen(BoxLayout):
     def fetch_hourly_forecast_data(self):
         # Use the API method to fetch hourly forecast data
         location_key = resorts[self.location]["accuweather_key"]
-        hourly_forecast_data = fetch_hourly_forecast_data(location_key)
+        hourly_forecast_data = api.fetch_hourly_forecast_data(location_key)
         self.hourly_forecast_label.text = hourly_forecast_data
 
     def fetch_roadcam_images(self):
         # Use the API method to fetch roadcam images
         roadcam_img_src_urls = self.roadcam_img_src_urls
-        roadcam_images = fetch_roadcam_images_from_api(roadcam_img_src_urls)
+        roadcam_images = api.fetch_roadcam_images_from_api(roadcam_img_src_urls)
 
         if roadcam_images:
             for img_widget in roadcam_images:
@@ -156,13 +152,13 @@ class ResortScreen(BoxLayout):
         # Use the API method to fetch traffic info
         resort_location = resorts[self.location]["location"]
         user_location = os.getenv(user_lat_lng_string)  # Use the PHYSICAL_ADDRESS from config.py as the user's location
-        traffic_info = fetch_traffic_info(user_location, resort_location)
+        traffic_info = api.fetch_traffic_info(user_location, resort_location)
         self.traffic_info_label.text = traffic_info
 
     def fetch_historical_current_data(self):
         # Use the API method to fetch historical current data
         location_key = resorts[self.location]["accuweather_key"]
-        historical_current_data = fetch_historical_current_data(location_key)
+        historical_current_data = api.fetch_historical_current_data(location_key)
         self.historical_data_label.text = historical_current_data
         self.historical_data_label.texture_update()  # Update the texture to calculate the new size
         self.historical_data_label.height = self.historical_data_label.texture_size[1]  # Update the height
@@ -170,13 +166,13 @@ class ResortScreen(BoxLayout):
     def fetch_weather_data(self):
         # Use the API method to fetch weather data
         location_key = resorts[self.location]["accuweather_key"]
-        weather_data = fetch_weather_data(location_key)
+        weather_data = api.fetch_weather_data(location_key)
         self.weather_label.text = weather_data
 
     def fetch_forecast_data(self):
         # Use the API method to fetch forecast data
         location_key = resorts[self.location]["accuweather_key"]
-        forecast_data = fetch_forecast_data(location_key)
+        forecast_data = api.fetch_forecast_data(location_key)
         self.forecast_label.text = forecast_data
 
     def open_twitter_embed(self, *args):
