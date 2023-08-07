@@ -145,7 +145,7 @@ def fetch_historical_current_data(location_key):
             historical_current_data_str = "Historical Current Conditions (Past 24 Hours):\n"
             for data in historical_current_data:
                 time_str = data.get("LocalObservationDateTime")
-                time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
+                time = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
                 formatted_time = time.strftime("%b %d %H:%M")  # Format: Month Day Hour:Minute
                 temp = data.get("Temperature", {}).get("Imperial", {}).get("Value")
                 condition = data.get("WeatherText")
@@ -242,7 +242,7 @@ def fetch_hourly_forecast_data(location_key):
             for i in range(5):
                 data = hourly_forecast_data[i]
                 time_str = data.get("DateTime")
-                time = datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
+                time = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
                 hour_str = time.strftime("%H:%M")  # Extract hour part from time
                 temp = data.get("Temperature", {}).get("Value")
                 condition = data.get("IconPhrase")
