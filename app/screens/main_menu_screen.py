@@ -12,7 +12,7 @@ class MainMenuScreen(BoxLayout):
         self.padding = '20dp'
 
         # Create label for the title
-        title_label = Label(text='Resort Conditions', font_size='24sp', bold=True, size_hint=(1, 0.2))
+        title_label = Label(text='Resort Conditions', color='#1E90FF', font_size='24sp', bold=True, size_hint=(1, 0.2))
         self.add_widget(title_label)
 
         # Create buttons for each resort

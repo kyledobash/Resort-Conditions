@@ -21,8 +21,14 @@ class ResortScreen(BoxLayout):
         self.roadcam_img_src_urls = roadcam_img_src_urls
 
         # Top row with resort name centered
-        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp', padding='10dp')
-        resort_name_label = CustomLabel(text=f"[color=DodgerBlue][b][size=24]{self.location}[/size][/b][/color]", halign='center', valign='middle', markup=True)
+        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
+        resort_name_label = CustomLabel(
+            text=f"[color=#1E90FF][b]{self.location}[/b][/color]",
+            halign='center',
+            valign='middle',
+            markup=True,
+            font_size='24sp'  # Increase the font size
+        )
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
 
