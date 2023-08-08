@@ -26,9 +26,9 @@ class ResortScreen(BoxLayout):
         resort_name_label = CustomLabel(
             text=f"[color=#1E90FF][b]{self.location}[/b][/color]",
             halign='center',
-            valign='middle',
+            valign='bottom',
             markup=True,
-            font_size='24sp'  # Increase the font size
+            font_size='24sp',  # Increase the font size
         )
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
@@ -86,20 +86,6 @@ class ResortScreen(BoxLayout):
 
         # Bind the width property of main_layout to adjust its width dynamically
         main_layout.bind(width=self.adjust_main_layout_width)
-
-        # # Bottom row with "Back to Menu" button and Twitter button
-        # bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='100dp', padding='20dp')
-        # back_button = Button(text="Back to Menu", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
-        # back_button.bind(on_release=self.switch_to_main_menu)
-        # bottom_layout.add_widget(back_button)
-        # self.add_widget(bottom_layout)
-
-        # # Twitter button
-        # twitter_button = Button(text=f"{location} Twitter Feed", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
-        # twitter_button.bind(on_release=self.open_twitter_embed)
-        # bottom_layout.add_widget(twitter_button)
-
-        # Bottom row with "Back to Menu" button and Twitter button
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='100dp', padding='20dp')
 
         back_button = Button(
