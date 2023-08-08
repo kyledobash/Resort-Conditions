@@ -2,6 +2,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.app import App
 import webbrowser
@@ -86,17 +87,42 @@ class ResortScreen(BoxLayout):
         # Bind the width property of main_layout to adjust its width dynamically
         main_layout.bind(width=self.adjust_main_layout_width)
 
-        # Bottom row with "Back to Menu" button (as before)
-        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp', padding='10dp')
-        back_button = Button(text="Back to Menu", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
+        # # Bottom row with "Back to Menu" button and Twitter button
+        # bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='100dp', padding='20dp')
+        # back_button = Button(text="Back to Menu", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
+        # back_button.bind(on_release=self.switch_to_main_menu)
+        # bottom_layout.add_widget(back_button)
+        # self.add_widget(bottom_layout)
+
+        # # Twitter button
+        # twitter_button = Button(text=f"{location} Twitter Feed", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
+        # twitter_button.bind(on_release=self.open_twitter_embed)
+        # bottom_layout.add_widget(twitter_button)
+
+        # Bottom row with "Back to Menu" button and Twitter button
+        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='100dp', padding='20dp')
+
+        back_button = Button(
+            text="[color=#1E90FF][b]Back to Menu[/b][/color]",
+            background_color=(0.3, 0.3, 0.3, 1),
+            color=(1, 1, 1, 1),
+            font_size='18sp',
+            markup=True
+        )
         back_button.bind(on_release=self.switch_to_main_menu)
         bottom_layout.add_widget(back_button)
-        self.add_widget(bottom_layout)
 
-        # Twitter button
-        twitter_button = Button(text=f"{location} Twitter Feed", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1))
+        twitter_button = Button(
+            text=f"[color=#1E90FF][b]{location} Twitter Feed[/b][/color]",
+            background_color=(0.3, 0.3, 0.3, 1),
+            color=(1, 1, 1, 1),
+            font_size='18sp',
+            markup=True
+        )
         twitter_button.bind(on_release=self.open_twitter_embed)
         bottom_layout.add_widget(twitter_button)
+
+        self.add_widget(bottom_layout)  # Add the bottom_layout to the ResortScreen widget
 
     def adjust_main_layout_width(self, instance, width):
         self.width = width

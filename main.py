@@ -1,5 +1,6 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.core.window import Window
 import logging
 from dotenv import load_dotenv
 
@@ -47,6 +48,9 @@ class SkiResortWeatherApp(App):
     
     def adjust_root_width(self, instance, width):
         instance.width = width
+
+    def on_start(self):
+        Window.maximize()
     
 
 if __name__ == '__main__':
