@@ -37,18 +37,18 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=1, spacing='15dp', size_hint_y=None, padding='10dp')
+        main_layout = GridLayout(cols=1, spacing='15dp', size_hint_y=None, padding='20dp')
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
         # Resort data container
-        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
+        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='80dp')
         self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp')
         resort_data_container.add_widget(self.resort_data_label)
         main_layout.add_widget(resort_data_container)
 
         # Traffic info container
-        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
+        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='80dp')
         self.traffic_info_label = CustomLabel(text="Fetching traffic info...", font_size='18sp')
         traffic_info_container.add_widget(self.traffic_info_label)
         main_layout.add_widget(traffic_info_container)
@@ -60,13 +60,13 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(weather_data_container)
 
         # Daily (forecast) data container
-        forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
         self.forecast_label = CustomLabel(text="Fetching forecast data...", font_size='18sp', markup=True)
         forecast_data_container.add_widget(self.forecast_label)
         main_layout.add_widget(forecast_data_container)
 
         # Hourly forecast data container
-        hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='175dp')
         self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...", font_size='18sp')
         hourly_forecast_container.add_widget(self.hourly_forecast_label)
         main_layout.add_widget(hourly_forecast_container)
