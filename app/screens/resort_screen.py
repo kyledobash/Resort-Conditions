@@ -21,6 +21,10 @@ class ResortScreen(BoxLayout):
         self.twitter_handle = twitter_handle
         self.roadcam_img_src_urls = roadcam_img_src_urls
 
+        # Initialize UI components
+        self.init_ui()
+
+    def init_ui(self):
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
         resort_name_label = CustomLabel(
@@ -99,7 +103,7 @@ class ResortScreen(BoxLayout):
         bottom_layout.add_widget(back_button)
 
         twitter_button = Button(
-            text=f"[color=#1E90FF][b]{location} Twitter Feed[/b][/color]",
+            text=f"[color=#1E90FF][b]{self.location} Twitter Feed[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
             font_size='18sp',
