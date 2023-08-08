@@ -161,6 +161,8 @@ class ResortScreen(BoxLayout):
             self.roadcam_images_container.height = container_height
 
             for img_widget in roadcam_images:
+                img_widget.allow_stretch = True  # Set allow_stretch to True to stretch the image
+                img_widget.keep_ratio = True  # Set keep_ratio to False to stretch the image
                 self.roadcam_images_container.add_widget(img_widget)
             self.roadcam_images_container.remove_widget(self.roadcam_images_label)  # Remove the "Fetching Roadcam Images..." label
         else:
