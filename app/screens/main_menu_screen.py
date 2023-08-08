@@ -1,6 +1,9 @@
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.videoplayer import VideoPlayer
+from kivy.uix.video import Video
+from kivy.core.window import Window
 from kivy.app import App
 from app.config.config import resorts
 import webbrowser
@@ -8,6 +11,14 @@ import webbrowser
 class MainMenuScreen(RelativeLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.size = Window.size
+
+        # Create/Add Background Video
+        video = Video(source='app/videos/production_id_5021911.mp4')
+        video.state='play'
+        video.options = {'eos': 'loop'}
+        video.allow_stretch=True
+        self.add_widget(video)
 
         # Create label for the title
         title_label = Label(
