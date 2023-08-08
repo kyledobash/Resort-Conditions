@@ -11,20 +11,21 @@ import webbrowser
 class MainMenuScreen(RelativeLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.size = Window.size
 
         # Create/Add Background Video
         video = Video(source='app/videos/production_id_5021911.mp4')
         video.state='play'
         video.options = {'eos': 'loop'}
         video.allow_stretch=True
+        video.size = Window.size
+        video.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
         self.add_widget(video)
 
         # Create label for the title
         title_label = Label(
             text='Resort Conditions',
-            color='#1E90FF',
-            font_size='24sp',
+            color='#363636',
+            font_size='30sp',
             bold=True,
             size_hint=(None, None)
         )
@@ -36,7 +37,7 @@ class MainMenuScreen(RelativeLayout):
         button_height = '80dp'
         for index, (location, _) in enumerate(resorts.items()):
             button = Button(
-                text="[color=#1E90FF][b]" + location + "[/b][/color]",
+                text="[color=#808080][b]" + location + "[/b][/color]",
                 size_hint=(None, None),
                 size=(button_width, button_height),
                 markup=True,
@@ -53,11 +54,11 @@ class MainMenuScreen(RelativeLayout):
          # Add watermark label
         watermark_label = Label(
             text='[ref=github]github.com/kyledobash[/ref]',
-            color='#808080',
+            color='##404040',
             font_size='12sp',
             bold=False,
             size_hint=(None, None),
-            pos_hint={'right': .965, 'y': .020},
+            pos_hint={'right': .945, 'y': .020},
             markup=True
         )
         watermark_label.bind(on_ref_press=self.open_link)
@@ -66,11 +67,11 @@ class MainMenuScreen(RelativeLayout):
         # Add MIT license watermark label
         license_label = Label(
             text='[ref=license]© MIT License[/ref]',
-            color='#808080',
+            color='##404040',
             font_size='10sp',
             bold=False,
             size_hint=(None, None),
-            pos_hint={'right': .965, 'bottom': 1},
+            pos_hint={'right': .945, 'bottom': 1},
             markup=True
         )
         license_label.bind(on_ref_press=self.open_link)
@@ -87,10 +88,10 @@ class MainMenuScreen(RelativeLayout):
         app = App.get_running_app()
 
         # Get the instance of ResortScreen from the ScreenManager using the location without markup
-        resort_screen = app.root.get_screen(button.text.replace('[color=#1E90FF][b]', '').replace('[/b][/color]', '')).children[0]
+        resort_screen = app.root.get_screen(button.text.replace('[color=#808080][b]', '').replace('[/b][/color]', '')).children[0]
 
         # Fetch the data for the specific resort screen
         resort_screen.fetch_data()
 
         # Switch to the specific resort screen
-        app.root.current = button.text.replace('[color=#1E90FF][b]', '').replace('[/b][/color]', '')
+        app.root.current = button.text.replace('[color=#808080][b]', '').replace('[/b][/color]', '')

@@ -1,8 +1,10 @@
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.app import App
 import webbrowser
@@ -21,6 +23,10 @@ class ResortScreen(BoxLayout):
         self.twitter_handle = twitter_handle
         self.roadcam_img_src_urls = roadcam_img_src_urls
 
+        # # Set the background image using an Image widget
+        # background_image = Image(source='app/images/matterhorn-vector.jpg', allow_stretch=True)
+        # self.add_widget(background_image)
+
         # Initialize UI components
         self.init_ui()
 
@@ -28,7 +34,7 @@ class ResortScreen(BoxLayout):
         # Top row with resort name centered
         top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
         resort_name_label = CustomLabel(
-            text=f"[color=#1E90FF][b]{self.location}[/b][/color]",
+            text=f"[color=#808080][b]{self.location}[/b][/color]",
             halign='center',
             valign='bottom',
             markup=True,
@@ -93,7 +99,7 @@ class ResortScreen(BoxLayout):
         bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='100dp', padding='20dp')
 
         back_button = Button(
-            text="[color=#1E90FF][b]Back to Menu[/b][/color]",
+            text="[color=#808080][b]Back to Menu[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
             font_size='18sp',
@@ -103,7 +109,7 @@ class ResortScreen(BoxLayout):
         bottom_layout.add_widget(back_button)
 
         twitter_button = Button(
-            text=f"[color=#1E90FF][b]{self.location} Twitter Feed[/b][/color]",
+            text=f"[color=#808080][b]{self.location} Twitter Feed[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
             font_size='18sp',
