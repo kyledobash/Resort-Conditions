@@ -4,8 +4,10 @@ from kivy.uix.label import Label
 from kivy.uix.videoplayer import VideoPlayer
 from kivy.uix.video import Video
 from kivy.core.window import Window
+from kivy.core.text import LabelBase
 from kivy.app import App
 from app.config.config import resorts
+from kivy.lang import Builder
 import webbrowser
 
 class MainMenuScreen(RelativeLayout):
@@ -21,15 +23,20 @@ class MainMenuScreen(RelativeLayout):
         video.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
         self.add_widget(video)
 
+        # Register the custom font
+        LabelBase.register(name='DrippyFont', fn_regular='app/fonts/Meltdownmf-OEyd.ttf')
+
         # Create label for the title
         title_label = Label(
-            text='Resort Conditions',
-            color='#363636',
-            font_size='30sp',
+            text='Resort\nConditions',
+            font_name='DrippyFont',
+            color='#181A18',
+            font_size='100sp',
             bold=True,
-            size_hint=(None, None)
+            size_hint=(None, None),
+            halign='center'
         )
-        title_label.pos_hint = {'center_x': 0.5, 'top': 0.65}
+        title_label.pos_hint = {'center_x': 0.5, 'top': 0.79}
         self.add_widget(title_label)
 
         # Create buttons for each resort
@@ -41,20 +48,21 @@ class MainMenuScreen(RelativeLayout):
                 size_hint=(None, None),
                 size=(button_width, button_height),
                 markup=True,
-                background_color=(0.3, 0.3, 0.3, 1),
+                background_color=(0.3, 0.3, 0.3, .9),
                 color=(1, 1, 1, 1),
+                font_name='DrippyFont',
                 font_size='18sp',
                 bold=True
             )
             button.bind(on_release=self.switch_to_resort_screen)
             button.resort_location = resorts[location]['location']
-            button.pos_hint = {'center_x': 0.5, 'center_y': 0.5 - index * 0.102}
+            button.pos_hint = {'center_x': 0.5, 'center_y': 0.5 - index * 0.105}
             self.add_widget(button)
 
          # Add watermark label
         watermark_label = Label(
             text='[ref=github]github.com/kyledobash[/ref]',
-            color='##404040',
+            color='#404040',
             font_size='12sp',
             bold=False,
             size_hint=(None, None),
@@ -67,7 +75,7 @@ class MainMenuScreen(RelativeLayout):
         # Add MIT license watermark label
         license_label = Label(
             text='[ref=license]© MIT License[/ref]',
-            color='##404040',
+            color='#404040',
             font_size='10sp',
             bold=False,
             size_hint=(None, None),

@@ -17,8 +17,8 @@ from app.utils.geolocation import get_user_location
 from app.screens.resort_screen import ResortScreen
 from app.screens.main_menu_screen import MainMenuScreen
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
+# Set the logging level to WARNING
+logging.basicConfig(level=logging.WARNING)
 
 # Load environment variables from .env
 load_dotenv()
