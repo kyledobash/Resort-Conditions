@@ -23,22 +23,19 @@ class ResortScreen(BoxLayout):
         self.twitter_handle = twitter_handle
         self.roadcam_img_src_urls = roadcam_img_src_urls
 
-        # # Set the background image using an Image widget
-        # background_image = Image(source='app/images/matterhorn-vector.jpg', allow_stretch=True)
-        # self.add_widget(background_image)
-
         # Initialize UI components
         self.init_ui()
 
     def init_ui(self):
         # Top row with resort name centered
-        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='50dp')
+        top_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='65dp')
         resort_name_label = CustomLabel(
             text=f"[color=#808080][b]{self.location}[/b][/color]",
             halign='center',
             valign='bottom',
             markup=True,
-            font_size='24sp',  # Increase the font size
+            font_name='DrippyFont',
+            font_size='60sp',  # Increase the font size
         )
         top_layout.add_widget(resort_name_label)
         self.add_widget(top_layout)
@@ -102,7 +99,8 @@ class ResortScreen(BoxLayout):
             text="[color=#808080][b]Back to Menu[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
-            font_size='18sp',
+            font_size='40sp',
+            font_name='DrippyFont',
             markup=True
         )
         back_button.bind(on_release=self.switch_to_main_menu)
@@ -112,7 +110,8 @@ class ResortScreen(BoxLayout):
             text=f"[color=#808080][b]{self.location} Twitter Feed[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
-            font_size='18sp',
+            font_size='40sp',
+            font_name='DrippyFont',
             markup=True
         )
         twitter_button.bind(on_release=self.open_twitter_embed)

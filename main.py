@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.core.window import Window
+from kivy.core.text import LabelBase
 import logging
 from dotenv import load_dotenv
 
@@ -26,6 +27,15 @@ load_dotenv()
 class SkiResortWeatherApp(App):
     def build(self):
         self.screen_manager = ScreenManager()
+
+        # Register the custom font
+        LabelBase.register(name='DrippyFont', fn_regular='app/fonts/Meltdownmf-OEyd.ttf')
+        LabelBase.register(name='HorrorCorps', fn_regular='app/fonts/HorrorCorpsDemo-Rp1MA.otf')
+        LabelBase.register(name='PiecesNFI', fn_regular='app/fonts/PiecesNfi-LrOn.ttf')
+        LabelBase.register(name='DoubleFeature', fn_regular='app/fonts/DoubleFeature-KvAe.ttf')
+        LabelBase.register(name='HemoGoblin', fn_regular='app/fonts/HemogoblinSemiItalic-Krze.otf')
+        LabelBase.register(name='JDMelted', fn_regular='app/fonts/JdMelted-mXw2.ttf')
+        LabelBase.register(name='GoreFont', fn_regular='app/fonts/GorefontIi-2vAw.ttf')
 
         # Add the main menu screen
         main_menu_screen = Screen(name='Main Menu')
