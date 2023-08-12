@@ -99,7 +99,7 @@ class ResortScreen(BoxLayout):
             text="[color=#808080][b]Back to Menu[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
-            font_size='40sp',
+            font_size='39sp',
             font_name='DrippyFont',
             markup=True
         )
@@ -110,7 +110,7 @@ class ResortScreen(BoxLayout):
             text=f"[color=#808080][b]{self.location} Twitter Feed[/b][/color]",
             background_color=(0.3, 0.3, 0.3, 1),
             color=(1, 1, 1, 1),
-            font_size='40sp',
+            font_size='39sp',
             font_name='DrippyFont',
             markup=True
         )

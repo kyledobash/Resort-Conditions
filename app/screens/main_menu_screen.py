@@ -1,12 +1,14 @@
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 from kivy.uix.videoplayer import VideoPlayer
 from kivy.uix.video import Video
 from kivy.core.window import Window
 from kivy.app import App
 from app.config.config import resorts
 from kivy.lang import Builder
+from kivy.graphics import Rectangle, Color
 import webbrowser
 
 class MainMenuScreen(RelativeLayout):
@@ -26,13 +28,13 @@ class MainMenuScreen(RelativeLayout):
         title_label = Label(
             text='Resort\nConditions',
             font_name='GoreFont',
-            color='#222222',
-            font_size='120sp',
+            color=(0, 0, 0, .85),
+            font_size='80sp',
             bold=True,
             size_hint=(None, None),
-            halign='center'
+            halign='center',
+            pos_hint={'center_x': 0.5, 'top': 0.75},
         )
-        title_label.pos_hint = {'center_x': 0.5, 'top': 0.79}
         self.add_widget(title_label)
 
         # Create buttons for each resort
@@ -47,20 +49,30 @@ class MainMenuScreen(RelativeLayout):
                 background_color=(0.3, 0.3, 0.3, .95),
                 color=(1, 1, 1, 1),
                 font_name='DrippyFont',
-                font_size='40sp',
+                font_size='39sp',
                 bold=True
             )
             button.bind(on_release=self.switch_to_resort_screen)
             button.resort_location = resorts[location]['location']
-            button.pos_hint = {'center_x': 0.5, 'center_y': 0.5 - index * 0.105}
+            button.pos_hint = {'center_x': 0.5, 'center_y': 0.55 - index * 0.105}
             self.add_widget(button)
+
+            left_mirror_image = Image(source='app/images/pngwing.comcopy.png')
+            left_mirror_image.pos_hint = {'center_x': 0.27, 'center_y': 0.41}
+            left_mirror_image.size_hint = (0.4, 0.4)  # Adjust the size_hint to make the image smaller
+            self.add_widget(left_mirror_image)
+
+            right_mirror_image = Image(source='app/images/pngwing.com.png')
+            right_mirror_image.pos_hint = {'center_x': 0.73, 'center_y': 0.41}
+            right_mirror_image.size_hint = (0.4, 0.4)  # Adjust the size_hint to make the image smaller
+            self.add_widget(right_mirror_image)
 
          # Add watermark label
         watermark_label = Label(
             text='[ref=github]github.com/kyledobash[/ref]',
-            color='#808080',
+            color='#222222',
             font_size='12sp',
-            bold=False,
+            bold=True,
             size_hint=(None, None),
             pos_hint={'right': .945, 'y': .020},
             markup=True
@@ -71,9 +83,9 @@ class MainMenuScreen(RelativeLayout):
         # Add MIT license watermark label
         license_label = Label(
             text='[ref=license]© MIT License[/ref]',
-            color='#808080',
+            color='#222222',
             font_size='10sp',
-            bold=False,
+            bold=True,
             size_hint=(None, None),
             pos_hint={'right': .945, 'bottom': 1},
             markup=True
