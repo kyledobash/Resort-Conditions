@@ -201,6 +201,9 @@ def fetch_hourly_forecast_data(location_key):
         return f"Error fetching hourly forecast data for {location_key}: {e}"
 
 def fetch_resort_data(resort_slug):
+    if not resort_slug:
+        return None  # Resort slug is empty, return None
+
     # Fetch resort data from X Rapid Ski API using the given resort_slug
     RAPIDAPI_KEY = os.getenv("SKI_API_KEY")
 
