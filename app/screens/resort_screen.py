@@ -45,7 +45,7 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=1, spacing='15dp', size_hint_y=None, padding='20dp')
+        main_layout = GridLayout(cols=3, spacing='15dp', size_hint_y=None, padding='20dp')
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
