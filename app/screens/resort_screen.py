@@ -7,6 +7,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
+from kivy.metrics import dp
 import webbrowser
 import datetime
 import json
@@ -48,12 +49,15 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=3, spacing='15dp', size_hint_y=None, padding='20dp')
+        main_layout = GridLayout(cols=3, size_hint_y=3)
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
+        # Calculate the width of each column based on the screen width
+        column_width = self.width / 3 - dp(40)  # Subtract the padding (20dp) on each side
+
         # Resort data container
-        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        resort_data_container = BoxLayout(orientation='vertical')
         resort_data_title = CustomLabel(
             text="[color=#FFD700][b]Resort Data[/b][/color]",
             halign='center',
@@ -67,7 +71,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(resort_data_container)
 
         # Traffic info container
-        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        traffic_info_container = BoxLayout(orientation='vertical')
         traffic_info_title = CustomLabel(
             text="[color=#FFD700][b]Traffic[/b][/color]",
             halign='center',
@@ -81,7 +85,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(traffic_info_container)
 
         # Weather data container
-        weather_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        weather_data_container = BoxLayout(orientation='vertical')
         weather_data_title = CustomLabel(
             text="[color=#FFD700][b]Weather[/b][/color]",
             halign='center',
@@ -95,7 +99,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(weather_data_container)
 
         # Daily (forecast) data container
-        forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        forecast_data_container = BoxLayout(orientation='vertical')
         forecast_data_title = CustomLabel(
             text="[color=#FFD700][b]Daily Temps[/b][/color]",
             halign='center',
@@ -109,7 +113,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(forecast_data_container)
 
         # Hourly forecast data container
-        hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        hourly_forecast_container = BoxLayout(orientation='vertical')
         hourly_data_title = CustomLabel(
             text="[color=#FFD700][b]Hourly Forecast[/b][/color]",
             halign='center',
@@ -123,7 +127,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(hourly_forecast_container)
 
         # Historical data container
-        historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        historical_data_container = BoxLayout(orientation='vertical')
         historical_data_title = CustomLabel(
             text="[color=#FFD700][b]Past Conditions[/b][/color]",
             halign='center',
@@ -137,7 +141,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(historical_data_container)
 
         # Twitter data container
-        twitter_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        twitter_data_container = BoxLayout(orientation='vertical')
         twitter_data_title = CustomLabel(
             text="[color=#FFD700][b]Twitter[/b][/color]",
             halign='center',
@@ -147,14 +151,14 @@ class ResortScreen(BoxLayout):
         )
         self.twitter_data_label = CustomLabel(
             text="Fetching Tweets...",
-            font_size='18sp'
+            font_size='18sp',
         )
         twitter_data_container.add_widget(twitter_data_title)
         twitter_data_container.add_widget(self.twitter_data_label)
         main_layout.add_widget(twitter_data_container)
 
         # Create the roadcam images container and label
-        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None, height='800dp')
+        self.roadcam_images_container = BoxLayout(orientation='vertical')
         roadcams_data_title = CustomLabel(
             text="[color=#FFD700][b]Roadcams[/b][/color]",
             halign='center',
@@ -199,18 +203,19 @@ class ResortScreen(BoxLayout):
         self.width = width
 
     def fetch_data(self):
-        try:
-            # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
-            self.fetch_traffic_info()
-            self.fetch_historical_current_data()
-            self.fetch_weather_data()
-            self.fetch_forecast_data()
-            self.fetch_hourly_forecast_data()
-            self.fetch_resort_data()
-            self.fetch_roadcam_images()
-            self.fetch_twitter_data()
-        except Exception as e:
-            print(f"Error fetching data: {e}")
+        self.fetch_traffic_info()
+        self.fetch_historical_current_data()
+        self.fetch_weather_data()
+        self.fetch_forecast_data()
+        self.fetch_hourly_forecast_data()
+        self.fetch_resort_data()
+        self.fetch_roadcam_images()
+        self.fetch_twitter_data()
+
+    def adjust_container_height(self, label, container):
+        label.texture_update()  # Update the texture to calculate the new size
+        label.height = label.texture_size[1]  # Update the height
+        container.height = label.height  # Update the container height to match the label height
 
     def fetch_resort_data(self):
         try:
