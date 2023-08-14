@@ -145,13 +145,16 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.twitter_data_label = CustomLabel(text="Fetching Tweets...", font_size='18sp')
+        self.twitter_data_label = CustomLabel(
+            text="Fetching Tweets...",
+            font_size='18sp'
+        )
         twitter_data_container.add_widget(twitter_data_title)
         twitter_data_container.add_widget(self.twitter_data_label)
         main_layout.add_widget(twitter_data_container)
 
         # Create the roadcam images container and label
-        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None)
+        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None, height='800dp')
         roadcams_data_title = CustomLabel(
             text="[color=#FFD700][b]Roadcams[/b][/color]",
             halign='center',
@@ -309,7 +312,6 @@ class ResortScreen(BoxLayout):
         try:
             # Use the API method to fetch Twitter data
             twitter_data = api.fetch_user_tweets(self.twitter_handle)
-            print(twitter_data)
 
             if twitter_data is None or len(twitter_data) == 0:
                 self.twitter_data_label.text = f"No tweets available for {self.location}"
@@ -319,13 +321,10 @@ class ResortScreen(BoxLayout):
             tweet_texts = []
             for tweet in twitter_data[:3]:
                 created_at = tweet.get('created_at')
-                tweet_id = tweet.get('id_str')
                 text = tweet.get('text')
-                retweet_count = tweet.get('retweet_count')
-                favorite_count = tweet.get('favorite_count')
 
                 # Create a string with the tweet data
-                tweet_text = f"Created at: {created_at}\nTweet ID: {tweet_id}\nText: {text}\nRetweets: {retweet_count}\nFavorites: {favorite_count}"
+                tweet_text = f"Created at: {created_at}\nText: {text}"
                 tweet_texts.append(tweet_text)
 
             # Update the Twitter data label with the combined tweet texts
