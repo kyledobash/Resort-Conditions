@@ -50,7 +50,7 @@ class ResortScreen(BoxLayout):
         scroll_view.add_widget(main_layout)
 
         # Resort data container
-        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='60dp')
+        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
         resort_data_title = CustomLabel(
             text="[color=#FFD700][b]Resort Data[/b][/color]",
             halign='center',
@@ -64,7 +64,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(resort_data_container)
 
         # Traffic info container
-        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='160dp')
+        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
         traffic_info_title = CustomLabel(
             text="[color=#FFD700][b]Traffic[/b][/color]",
             halign='center',
@@ -78,7 +78,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(traffic_info_container)
 
         # Weather data container
-        weather_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        weather_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
         weather_data_title = CustomLabel(
             text="[color=#FFD700][b]Weather[/b][/color]",
             halign='center',
@@ -92,7 +92,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(weather_data_container)
 
         # Daily (forecast) data container
-        forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
+        forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
         forecast_data_title = CustomLabel(
             text="[color=#FFD700][b]Daily Temps[/b][/color]",
             halign='center',
@@ -106,7 +106,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(forecast_data_container)
 
         # Hourly forecast data container
-        hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='175dp')
+        hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
         hourly_data_title = CustomLabel(
             text="[color=#FFD700][b]Hourly Forecast[/b][/color]",
             halign='center',
@@ -120,7 +120,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(hourly_forecast_container)
 
         # Historical data container
-        historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='500dp')
+        historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
         historical_data_title = CustomLabel(
             text="[color=#FFD700][b]Past Conditions[/b][/color]",
             halign='center',
