@@ -50,44 +50,100 @@ class ResortScreen(BoxLayout):
         scroll_view.add_widget(main_layout)
 
         # Resort data container
-        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='80dp')
+        resort_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='60dp')
+        resort_data_title = CustomLabel(
+            text="[color=#FFD700][b]Resort Data[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
         self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp')
+        resort_data_container.add_widget(resort_data_title)
         resort_data_container.add_widget(self.resort_data_label)
         main_layout.add_widget(resort_data_container)
 
         # Traffic info container
-        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='80dp')
+        traffic_info_container = BoxLayout(orientation='vertical', size_hint_y=None, height='160dp')
+        traffic_info_title = CustomLabel(
+            text="[color=#FFD700][b]Traffic[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp'
+        )
         self.traffic_info_label = CustomLabel(text="Fetching traffic info...", font_size='18sp')
+        traffic_info_container.add_widget(traffic_info_title)
         traffic_info_container.add_widget(self.traffic_info_label)
         main_layout.add_widget(traffic_info_container)
 
         # Weather data container
         weather_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='150dp')
+        weather_data_title = CustomLabel(
+            text="[color=#FFD700][b]Weather[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
         self.weather_label = CustomLabel(text="Fetching weather data...", font_size='18sp')
+        weather_data_container.add_widget(weather_data_title)
         weather_data_container.add_widget(self.weather_label)
         main_layout.add_widget(weather_data_container)
 
         # Daily (forecast) data container
         forecast_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='50dp')
+        forecast_data_title = CustomLabel(
+            text="[color=#FFD700][b]Daily Temps[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
         self.forecast_label = CustomLabel(text="Fetching forecast data...", font_size='18sp', markup=True)
+        forecast_data_container.add_widget(forecast_data_title)
         forecast_data_container.add_widget(self.forecast_label)
         main_layout.add_widget(forecast_data_container)
 
         # Hourly forecast data container
         hourly_forecast_container = BoxLayout(orientation='vertical', size_hint_y=None, height='175dp')
+        hourly_data_title = CustomLabel(
+            text="[color=#FFD700][b]Hourly Forecast[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
         self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...", font_size='18sp')
+        hourly_forecast_container.add_widget(hourly_data_title)
         hourly_forecast_container.add_widget(self.hourly_forecast_label)
         main_layout.add_widget(hourly_forecast_container)
 
         # Historical data container
         historical_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='500dp')
+        historical_data_title = CustomLabel(
+            text="[color=#FFD700][b]Past Conditions[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
         self.historical_data_label = CustomLabel(text="Fetching historical current data...", font_size='18sp')
+        historical_data_container.add_widget(historical_data_title)
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
         # Create the roadcam images container and label
         self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None)
+        roadcams_data_title = CustomLabel(
+            text="[color=#FFD700][b]Roadcams[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
         self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp')
+        self.roadcam_images_container.add_widget(roadcams_data_title)
         self.roadcam_images_container.add_widget(self.roadcam_images_label)
         main_layout.add_widget(self.roadcam_images_container)
 
