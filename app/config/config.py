@@ -17,7 +17,8 @@ resorts = {
             "http://udottraffic.utah.gov/1_devices/aux16216.jpeg",
             "http://udottraffic.utah.gov/1_devices/aux18040.jpeg",
             "http://udottraffic.utah.gov/1_devices/SR-190%20MP%2015%2095%20SL.gif",
-        ]
+        ],
+        "twitter_api_user_id": "18431196"
     },
     "Snowbird": {
         "accuweather_key": "101347_poi",         # Snowbird Ski Resort, Utah
@@ -34,7 +35,8 @@ resorts = {
             "http://udottraffic.utah.gov/1_devices/aux16270.jpeg",
             "http://udottraffic.utah.gov/1_devices/aux17227.jpeg",
             "http://udottraffic.utah.gov/1_devices/aux17226.jpeg"
-        ]
+        ],
+        "twitter_api_user_id": "24749103"
     },
     "Snowbasin": {
         "accuweather_key": "101346_poi",         # Snowbasin Ski Resort, Utah
@@ -47,7 +49,8 @@ resorts = {
             "http://udottraffic.utah.gov/1_devices/SR-226-all.gif",
             "http://udottraffic.utah.gov/1_devices/I-84-mp-92.jpeg",
             "http://udottraffic.utah.gov/1_devices/aux17617.jpeg"
-        ]
+        ],
+        "twitter_api_user_id": "42325818"
     },
     "Nordic Valley": {
         "accuweather_key": "28217_poi",
@@ -57,6 +60,7 @@ resorts = {
         "roadcam_webpage_url": "",
         "roadcam_img_src_urls": [
 
-        ]
+        ],
+        "twitter_api_user_id": "2446076226"
     }
 }

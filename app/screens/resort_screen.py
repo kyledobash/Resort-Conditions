@@ -8,6 +8,8 @@ from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 import webbrowser
+import datetime
+import json
 
 from app.config.config import resorts
 from app.utils import api
@@ -16,11 +18,12 @@ from app.widgets.label import CustomLabel
 
 
 class ResortScreen(BoxLayout):
-    def __init__(self, location, twitter_handle, roadcam_img_src_urls, **kwargs):
+    def __init__(self, location, twitter_handle, twitter_api_user_id, roadcam_img_src_urls, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.location = location
         self.twitter_handle = twitter_handle
+        self.twitter_api_user_id = twitter_api_user_id
         self.roadcam_img_src_urls = roadcam_img_src_urls
 
         # Initialize UI components
@@ -133,6 +136,20 @@ class ResortScreen(BoxLayout):
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
+        # Twitter data container
+        twitter_data_container = BoxLayout(orientation='vertical', size_hint_y=None, height='200dp')
+        twitter_data_title = CustomLabel(
+            text="[color=#FFD700][b]Twitter[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
+        self.twitter_data_label = CustomLabel(text="Fetching Tweets...", font_size='18sp')
+        twitter_data_container.add_widget(twitter_data_title)
+        twitter_data_container.add_widget(self.twitter_data_label)
+        main_layout.add_widget(twitter_data_container)
+
         # Create the roadcam images container and label
         self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=None)
         roadcams_data_title = CustomLabel(
@@ -188,6 +205,7 @@ class ResortScreen(BoxLayout):
             self.fetch_hourly_forecast_data()
             self.fetch_resort_data()
             self.fetch_roadcam_images()
+            self.fetch_twitter_data()
         except Exception as e:
             print(f"Error fetching data: {e}")
 
@@ -286,6 +304,34 @@ class ResortScreen(BoxLayout):
             self.forecast_label.text = forecast_data
         except Exception as e:
             print(f"Error fetching forecast data: {e}")
+
+    def fetch_twitter_data(self):
+        try:
+            # Use the API method to fetch Twitter data
+            twitter_data = api.fetch_user_tweets(self.twitter_handle)
+            print(twitter_data)
+
+            if twitter_data is None or len(twitter_data) == 0:
+                self.twitter_data_label.text = f"No tweets available for {self.location}"
+                return
+
+            # Iterate over the first three tweets in the list
+            tweet_texts = []
+            for tweet in twitter_data[:3]:
+                created_at = tweet.get('created_at')
+                tweet_id = tweet.get('id_str')
+                text = tweet.get('text')
+                retweet_count = tweet.get('retweet_count')
+                favorite_count = tweet.get('favorite_count')
+
+                # Create a string with the tweet data
+                tweet_text = f"Created at: {created_at}\nTweet ID: {tweet_id}\nText: {text}\nRetweets: {retweet_count}\nFavorites: {favorite_count}"
+                tweet_texts.append(tweet_text)
+
+            # Update the Twitter data label with the combined tweet texts
+            self.twitter_data_label.text = "\n\n".join(tweet_texts)
+        except Exception as e:
+            print(f"Error fetching Twitter data: {e}")
 
     def open_twitter_embed(self, *args):
         try:

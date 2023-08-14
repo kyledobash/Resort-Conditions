@@ -256,3 +256,22 @@ def fetch_roadcam_images_from_api(roadcam_img_src_urls):
             print("Error fetching image:", e)
 
     return img_widgets
+
+def fetch_user_tweets(twitter_handle):
+    url = "https://twitter135.p.rapidapi.com/v1.1/UserTimeline/"
+    headers = {
+        "X-RapidAPI-Key": os.getenv("SKI_API_KEY"),
+        "X-RapidAPI-Host": "twitter135.p.rapidapi.com"
+    }
+    params = {
+        "username": twitter_handle,  # Use the 'username' parameter instead of 'id'
+        "count": '3'  # Set the 'count' parameter to '1' as a string
+    }
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return f"Error: {response.status_code} {response.text}"
+    except requests.exceptions.RequestException as e:
+        return f"Error: {e}"

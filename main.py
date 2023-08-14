@@ -33,7 +33,8 @@ class SkiResortWeatherApp(App):
         for location, resort_data in resorts.items():
             roadcam_img_src_urls = resort_data.get("roadcam_img_src_urls", [])
             resort_screen = Screen(name=location)
-            resort_screen.add_widget(ResortScreen(location, resort_data["twitter_handle"], roadcam_img_src_urls=roadcam_img_src_urls))
+            twitter_api_user_id = resort_data.get("twitter_api_user_id")  # Get the twitter_api_user_id from the resort_data
+            resort_screen.add_widget(ResortScreen(location, resort_data["twitter_handle"], twitter_api_user_id=twitter_api_user_id, roadcam_img_src_urls=roadcam_img_src_urls))
             self.screen_manager.add_widget(resort_screen)
 
         self.adjust_root_width(self.screen_manager, 800)  # Call the adjust_root_width method with the desired width
