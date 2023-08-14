@@ -4,17 +4,9 @@ from kivy.core.window import Window
 from kivy.core.text import LabelBase
 import logging
 from dotenv import load_dotenv
-
-# Import necessary functions from app.utils.api.py
 from app.utils import api
-
-# Import Resort Dictionary
 from app.config.config import resorts
-
-# Import geolocation
 from app.utils.geolocation import get_user_location
-
-# Import Screens
 from app.screens.resort_screen import ResortScreen
 from app.screens.main_menu_screen import MainMenuScreen
 

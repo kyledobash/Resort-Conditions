@@ -1,18 +1,18 @@
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.button import Button
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.image import Image
-from kivy.core.window import Window
 from kivy.app import App
+from kivy.core.window import Window
+from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import Image
+from kivy.uix.label import Label
+from kivy.uix.scrollview import ScrollView
 import webbrowser
 
-from app.widgets.label import CustomLabel
+from app.config.config import resorts
 from app.utils import api
 from app.utils.geolocation import get_user_location
-from app.config.config import resorts
+from app.widgets.label import CustomLabel
 
 
 class ResortScreen(BoxLayout):
@@ -179,94 +179,127 @@ class ResortScreen(BoxLayout):
         self.width = width
 
     def fetch_data(self):
-        # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
-        self.fetch_traffic_info()
-        self.fetch_historical_current_data()
-        self.fetch_weather_data()
-        self.fetch_forecast_data()
-        self.fetch_hourly_forecast_data()
-        self.fetch_resort_data()
-        self.fetch_roadcam_images()
+        try:
+            # Fetch all the required data for the specific resort (traffic info, historical current data, weather data, forecast data)
+            self.fetch_traffic_info()
+            self.fetch_historical_current_data()
+            self.fetch_weather_data()
+            self.fetch_forecast_data()
+            self.fetch_hourly_forecast_data()
+            self.fetch_resort_data()
+            self.fetch_roadcam_images()
+        except Exception as e:
+            print(f"Error fetching data: {e}")
 
     def fetch_resort_data(self):
-        # Use the API method to fetch resort data
-        resort_slug = resorts[self.location]["resort_slug"]
-        resort_data = api.fetch_resort_data(resort_slug)  # Renamed the variable to avoid conflict
+        try:
+            # Use the API method to fetch resort data
+            resort_slug = resorts[self.location]["resort_slug"]
+            resort_data = api.fetch_resort_data(resort_slug)  # Renamed the variable to avoid conflict
 
-        if resort_data is None:
-            self.resort_data_label.text = f"Resort data not available for {self.location}"
-            return
+            if resort_data is None:
+                self.resort_data_label.text = f"Resort data not available for {self.location}"
+                return
 
-        # Format and update the resort data label
-        lifts_status = resort_data.get('lifts', {}).get('status', {})
-        lifts_open = [lift for lift, status in lifts_status.items() if status == 'open']
-        lifts_open_str = ', '.join(lifts_open)
-        conditions = resort_data.get('conditions', {})
-        self.resort_data_label.text = f"Lifts Open: {lifts_open_str}\nConditions: Base {conditions.get('base', 0)} cm, Season Total {conditions.get('season', 0)} cm"
-
+            # Format and update the resort data label
+            lifts_status = resort_data.get('lifts', {}).get('status', {})
+            lifts_open = [lift for lift, status in lifts_status.items() if status == 'open']
+            lifts_open_str = ', '.join(lifts_open)
+            conditions = resort_data.get('conditions', {})
+            self.resort_data_label.text = f"Lifts Open: {lifts_open_str}\nConditions: Base {conditions.get('base', 0)} cm, Season Total {conditions.get('season', 0)} cm"
+        except Exception as e:
+            print(f"Error fetching resort data: {e}")
 
     def fetch_hourly_forecast_data(self):
-        # Use the API method to fetch hourly forecast data
-        location_key = resorts[self.location]["accuweather_key"]
-        hourly_forecast_data = api.fetch_hourly_forecast_data(location_key)
-        self.hourly_forecast_label.text = hourly_forecast_data
+        try:
+            # Use the API method to fetch hourly forecast data
+            location_key = resorts[self.location]["accuweather_key"]
+            hourly_forecast_data = api.fetch_hourly_forecast_data(location_key)
+            self.hourly_forecast_label.text = hourly_forecast_data
+        except Exception as e:
+            print(f"Error fetching hourly forecast data: {e}")
 
     def fetch_roadcam_images(self):
-        # Use the API method to fetch roadcam images
-        roadcam_img_src_urls = self.roadcam_img_src_urls
-        roadcam_images = api.fetch_roadcam_images_from_api(roadcam_img_src_urls)
+        try:
+            # Check if the roadcam_images_label is a child widget of roadcam_images_container
+            if self.roadcam_images_label.parent is None:
+                return
 
-        if roadcam_images:
-            num_images = len(roadcam_images)
-            aspect_ratio = 16 / 9  # Desired aspect ratio of the images
+            # Use the API method to fetch roadcam images
+            roadcam_img_src_urls = self.roadcam_img_src_urls
+            roadcam_images = api.fetch_roadcam_images_from_api(roadcam_img_src_urls)
 
-            # Calculate the height based on the number of images and aspect ratio
-            container_height = f"{num_images * 100 * aspect_ratio}dp"
+            if roadcam_images:
+                num_images = len(roadcam_images)
+                aspect_ratio = 16 / 9  # Desired aspect ratio of the images
 
-            self.roadcam_images_container.height = container_height
+                # Calculate the height based on the number of images and aspect ratio
+                container_height = f"{num_images * 100 * aspect_ratio}dp"
 
-            for img_widget in roadcam_images:
-                img_widget.allow_stretch = True  # Set allow_stretch to True to stretch the image
-                img_widget.keep_ratio = True  # Set keep_ratio to False to stretch the image
-                self.roadcam_images_container.add_widget(img_widget)
-            self.roadcam_images_container.remove_widget(self.roadcam_images_label)  # Remove the "Fetching Roadcam Images..." label
-        else:
-            self.roadcam_images_label.text = "No Roadcam Images Available"
+                self.roadcam_images_container.height = container_height
+
+                for img_widget in roadcam_images:
+                    img_widget.allow_stretch = True  # Set allow_stretch to True to stretch the image
+                    img_widget.keep_ratio = True  # Set keep_ratio to False to stretch the image
+                    self.roadcam_images_container.add_widget(img_widget)
+                self.roadcam_images_container.remove_widget(self.roadcam_images_label)  # Remove the "Fetching Roadcam Images..." label
+            else:
+                self.roadcam_images_label.text = "No Roadcam Images Available"
+        except Exception as e:
+            print(f"Error fetching roadcam images: {e}")
 
     def fetch_traffic_info(self):
-        # Use the API method to fetch traffic info
-        resort_location = resorts[self.location]["location"]
-        user_location = get_user_location()  # Use the PHYSICAL_ADDRESS from config.py as the user's location
-        traffic_info = api.fetch_traffic_info(user_location, resort_location)
-        self.traffic_info_label.text = traffic_info
+        try:
+            # Use the API method to fetch traffic info
+            resort_location = resorts[self.location]["location"]
+            user_location = get_user_location()  # Use the PHYSICAL_ADDRESS from config.py as the user's location
+            traffic_info = api.fetch_traffic_info(user_location, resort_location)
+            self.traffic_info_label.text = traffic_info
+        except Exception as e:
+            print(f"Error fetching traffic info: {e}")
 
     def fetch_historical_current_data(self):
-        # Use the API method to fetch historical current data
-        location_key = resorts[self.location]["accuweather_key"]
-        historical_current_data = api.fetch_historical_current_data(location_key)
-        self.historical_data_label.text = historical_current_data
-        self.historical_data_label.texture_update()  # Update the texture to calculate the new size
-        self.historical_data_label.height = self.historical_data_label.texture_size[1]  # Update the height
+        try:
+            # Use the API method to fetch historical current data
+            location_key = resorts[self.location]["accuweather_key"]
+            historical_current_data = api.fetch_historical_current_data(location_key)
+            self.historical_data_label.text = historical_current_data
+            self.historical_data_label.texture_update()  # Update the texture to calculate the new size
+            self.historical_data_label.height = self.historical_data_label.texture_size[1]  # Update the height
+        except Exception as e:
+            print(f"Error fetching historical current data: {e}")
 
     def fetch_weather_data(self):
-        # Use the API method to fetch weather data
-        location_key = resorts[self.location]["accuweather_key"]
-        weather_data = api.fetch_weather_data(location_key)
-        self.weather_label.text = weather_data
+        try:
+            # Use the API method to fetch weather data
+            location_key = resorts[self.location]["accuweather_key"]
+            weather_data = api.fetch_weather_data(location_key)
+            self.weather_label.text = weather_data
+        except Exception as e:
+            print(f"Error fetching weather data: {e}")
 
     def fetch_forecast_data(self):
-        # Use the API method to fetch forecast data
-        location_key = resorts[self.location]["accuweather_key"]
-        forecast_data = api.fetch_forecast_data(location_key)
-        self.forecast_label.text = forecast_data
+        try:
+            # Use the API method to fetch forecast data
+            location_key = resorts[self.location]["accuweather_key"]
+            forecast_data = api.fetch_forecast_data(location_key)
+            self.forecast_label.text = forecast_data
+        except Exception as e:
+            print(f"Error fetching forecast data: {e}")
 
     def open_twitter_embed(self, *args):
-        # Construct the Twitter URL based on the resort's Twitter handle
-        twitter_url = f"https://twitter.com/{self.twitter_handle}?ref_src=twsrc%5Etfw"
+        try:
+            # Construct the Twitter URL based on the resort's Twitter handle
+            twitter_url = f"https://twitter.com/{self.twitter_handle}?ref_src=twsrc%5Etfw"
 
-        # Open the Twitter URL in the web browser
-        webbrowser.open(twitter_url)
+            # Open the Twitter URL in the web browser
+            webbrowser.open(twitter_url)
+        except Exception as e:
+            print(f"Error opening Twitter embed: {e}")
 
     def switch_to_main_menu(self, instance):
-        app = App.get_running_app()
-        app.root.current = 'Main Menu'
+        try:
+            app = App.get_running_app()
+            app.root.current = 'Main Menu'
+        except Exception as e:
+            print(f"Error switching to main menu: {e}")

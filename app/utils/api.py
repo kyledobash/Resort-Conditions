@@ -11,6 +11,8 @@ from datetime import datetime, timedelta
 def fetch_traffic_info(user_location, resort_location):
     # Fetch traffic info from the user's current location to the specific resort using the Bing Maps API
     bing_maps_api_key = os.getenv("BING_MAPS_API_KEY")
+    if not bing_maps_api_key:
+        return "BING_MAPS_API_KEY is not set."
 
     # Create the route URL with the provided start and end points, and API key
     route_url = "http://dev.virtualearth.net/REST/V1/Routes/Driving"
@@ -75,6 +77,8 @@ def fetch_traffic_info(user_location, resort_location):
 def fetch_historical_current_data(location_key):
     # Fetch historical current conditions for the past 24 hours from AccuWeather using location key
     ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+    if not ACCUWEATHER_API_KEY:
+        return "ACCUWEATHER_API_KEY is not set."
 
     historical_current_params = {
         "apikey": ACCUWEATHER_API_KEY,
@@ -106,6 +110,8 @@ def fetch_historical_current_data(location_key):
 def fetch_weather_data(location_key):
     # Fetch current weather data from AccuWeather using location key
     ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+    if not ACCUWEATHER_API_KEY:
+        return "ACCUWEATHER_API_KEY is not set."
 
     current_params = {
         "apikey": ACCUWEATHER_API_KEY,
@@ -142,6 +148,8 @@ def fetch_weather_data(location_key):
 def fetch_forecast_data(location_key):
     # Fetch 1-day daily forecast from AccuWeather using location key
     ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+    if not ACCUWEATHER_API_KEY:
+        return "ACCUWEATHER_API_KEY is not set."
 
     daily_forecast_params = {
         "apikey": ACCUWEATHER_API_KEY,
@@ -173,6 +181,8 @@ def fetch_forecast_data(location_key):
 def fetch_hourly_forecast_data(location_key):
     # Fetch next 12-hour hourly forecast from AccuWeather using location key
     ACCUWEATHER_API_KEY = os.getenv("ACCUWEATHER_API_KEY")
+    if not ACCUWEATHER_API_KEY:
+        return "ACCUWEATHER_API_KEY is not set."
 
     hourly_forecast_params = {
         "apikey": ACCUWEATHER_API_KEY,
@@ -205,10 +215,12 @@ def fetch_resort_data(resort_slug):
         return None  # Resort slug is empty, return None
 
     # Fetch resort data from X Rapid Ski API using the given resort_slug
-    RAPIDAPI_KEY = os.getenv("SKI_API_KEY")
+    SKI_API_KEY = os.getenv("SKI_API_KEY")
+    if not SKI_API_KEY:
+        return "SKI_API_KEY is not set."
 
     headers = {
-        'X-RapidAPI-Key': RAPIDAPI_KEY,
+        'X-RapidAPI-Key': SKI_API_KEY,
         'X-RapidAPI-Host': 'ski-resorts-and-conditions.p.rapidapi.com'
     }
 

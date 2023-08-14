@@ -10,6 +10,7 @@ from app.config.config import resorts
 from kivy.lang import Builder
 from kivy.graphics import Rectangle, Color
 import webbrowser
+import urllib.parse
 
 class MainMenuScreen(RelativeLayout):
     def __init__(self, **kwargs):
@@ -17,9 +18,9 @@ class MainMenuScreen(RelativeLayout):
 
         # Create/Add Background Video
         video = Video(source='app/videos/video_of_snowfall (1080p).mp4')
-        video.state='play'
+        video.state = 'play'
         video.options = {'eos': 'loop'}
-        video.allow_stretch=True
+        video.allow_stretch = True
         video.size = Window.size
         video.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
         self.add_widget(video)
@@ -67,7 +68,7 @@ class MainMenuScreen(RelativeLayout):
             right_mirror_image.size_hint = (0.4, 0.4)  # Adjust the size_hint to make the image smaller
             self.add_widget(right_mirror_image)
 
-         # Add watermark label
+        # Add watermark label
         watermark_label = Label(
             text='[ref=github]github.com/kyledobash[/ref]',
             color='#222222',
@@ -104,10 +105,10 @@ class MainMenuScreen(RelativeLayout):
         app = App.get_running_app()
 
         # Get the instance of ResortScreen from the ScreenManager using the location without markup
-        resort_screen = app.root.get_screen(button.text.replace('[color=#808080][b]', '').replace('[/b][/color]', '')).children[0]
+        resort_screen = app.root.get_screen(urllib.parse.unquote(button.text.replace('[color=#808080][b]', '').replace('[/b][/color]', ''))).children[0]
 
         # Fetch the data for the specific resort screen
         resort_screen.fetch_data()
 
         # Switch to the specific resort screen
-        app.root.current = button.text.replace('[color=#808080][b]', '').replace('[/b][/color]', '')
+        app.root.current = urllib.parse.unquote(button.text.replace('[color=#808080][b]', '').replace('[/b][/color]', ''))
