@@ -215,12 +215,12 @@ def fetch_resort_data(resort_slug):
         return None  # Resort slug is empty, return None
 
     # Fetch resort data from X Rapid Ski API using the given resort_slug
-    SKI_API_KEY = os.getenv("SKI_API_KEY")
-    if not SKI_API_KEY:
-        return "SKI_API_KEY is not set."
+    X_RAPID_API_KEY = os.getenv("X_RAPID_API_KEY")
+    if not X_RAPID_API_KEY:
+        return "X_RAPID_API_KEY is not set."
 
     headers = {
-        'X-RapidAPI-Key': SKI_API_KEY,
+        'X-RapidAPI-Key': X_RAPID_API_KEY,
         'X-RapidAPI-Host': 'ski-resorts-and-conditions.p.rapidapi.com'
     }
 
@@ -260,7 +260,7 @@ def fetch_roadcam_images_from_api(roadcam_img_src_urls):
 def fetch_user_tweets(twitter_handle):
     url = "https://twitter135.p.rapidapi.com/v1.1/UserTimeline/"
     headers = {
-        "X-RapidAPI-Key": os.getenv("SKI_API_KEY"),
+        "X-RapidAPI-Key": os.getenv("X_RAPID_API_KEY"),
         "X-RapidAPI-Host": "twitter135.p.rapidapi.com"
     }
     params = {
