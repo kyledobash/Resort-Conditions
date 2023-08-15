@@ -173,7 +173,7 @@ class ResortScreen(BoxLayout):
 
         # Bind the width property of main_layout to adjust its width dynamically
         main_layout.bind(width=self.adjust_main_layout_width)
-        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='100dp', padding='20dp')
+        bottom_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height='70dp', padding='5dp')
 
         back_button = Button(
             text="[color=#808080][b]Back to Menu[/b][/color]",
