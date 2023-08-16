@@ -36,7 +36,7 @@ class ResortScreen(BoxLayout):
         resort_name_label = CustomLabel(
             text=f"[color=#808080][b]{self.location}[/b][/color]",
             halign='center',
-            valign='bottom',
+            valign='top',
             markup=True,
             font_name='DrippyFont',
             font_size='60sp',  # Increase the font size
@@ -49,26 +49,12 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=3, size_hint_y=3)
+        main_layout = GridLayout(cols=3, size_hint_y=4)
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
         # Calculate the width of each column based on the screen width
         column_width = self.width / 3 - dp(40)  # Subtract the padding (20dp) on each side
-
-        # Resort data container
-        resort_data_container = BoxLayout(orientation='vertical')
-        resort_data_title = CustomLabel(
-            text="[color=#FFD700][b]Resort Data[/b][/color]",
-            halign='center',
-            markup=True,
-            font_name='DrippyFont',
-            font_size='30sp',
-        )
-        self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp')
-        resort_data_container.add_widget(resort_data_title)
-        resort_data_container.add_widget(self.resort_data_label)
-        main_layout.add_widget(resort_data_container)
 
         # Traffic info container
         traffic_info_container = BoxLayout(orientation='vertical')
@@ -83,6 +69,37 @@ class ResortScreen(BoxLayout):
         traffic_info_container.add_widget(traffic_info_title)
         traffic_info_container.add_widget(self.traffic_info_label)
         main_layout.add_widget(traffic_info_container)
+
+        # Twitter data container
+        twitter_data_container = BoxLayout(orientation='vertical')
+        twitter_data_title = CustomLabel(
+            text="[color=#FFD700][b]Twitter[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
+        self.twitter_data_label = CustomLabel(
+            text="Fetching Tweets...",
+            font_size='18sp',
+        )
+        twitter_data_container.add_widget(twitter_data_title)
+        twitter_data_container.add_widget(self.twitter_data_label)
+        main_layout.add_widget(twitter_data_container)
+
+        # Create the roadcam images container and label
+        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=3)
+        roadcams_data_title = CustomLabel(
+            text="[color=#FFD700][b]Roadcams[/b][/color]",
+            halign='center',
+            markup=True,
+            font_name='DrippyFont',
+            font_size='30sp',
+        )
+        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp')
+        self.roadcam_images_container.add_widget(roadcams_data_title)
+        self.roadcam_images_container.add_widget(self.roadcam_images_label)
+        main_layout.add_widget(self.roadcam_images_container)
 
         # Weather data container
         weather_data_container = BoxLayout(orientation='vertical')
@@ -140,36 +157,19 @@ class ResortScreen(BoxLayout):
         historical_data_container.add_widget(self.historical_data_label)
         main_layout.add_widget(historical_data_container)
 
-        # Twitter data container
-        twitter_data_container = BoxLayout(orientation='vertical')
-        twitter_data_title = CustomLabel(
-            text="[color=#FFD700][b]Twitter[/b][/color]",
+        # Resort data container
+        resort_data_container = BoxLayout(orientation='vertical')
+        resort_data_title = CustomLabel(
+            text="[color=#FFD700][b]Resort Data[/b][/color]",
             halign='center',
             markup=True,
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.twitter_data_label = CustomLabel(
-            text="Fetching Tweets...",
-            font_size='18sp',
-        )
-        twitter_data_container.add_widget(twitter_data_title)
-        twitter_data_container.add_widget(self.twitter_data_label)
-        main_layout.add_widget(twitter_data_container)
-
-        # Create the roadcam images container and label
-        self.roadcam_images_container = BoxLayout(orientation='vertical')
-        roadcams_data_title = CustomLabel(
-            text="[color=#FFD700][b]Roadcams[/b][/color]",
-            halign='center',
-            markup=True,
-            font_name='DrippyFont',
-            font_size='30sp',
-        )
-        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp')
-        self.roadcam_images_container.add_widget(roadcams_data_title)
-        self.roadcam_images_container.add_widget(self.roadcam_images_label)
-        main_layout.add_widget(self.roadcam_images_container)
+        self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp')
+        resort_data_container.add_widget(resort_data_title)
+        resort_data_container.add_widget(self.resort_data_label)
+        main_layout.add_widget(resort_data_container)
 
         # Bind the width property of main_layout to adjust its width dynamically
         main_layout.bind(width=self.adjust_main_layout_width)
