@@ -238,24 +238,12 @@ def fetch_resort_data(resort_slug):
         return None  # Error fetching resort data
 
 def fetch_roadcam_images_from_api(roadcam_img_src_urls):
-    # roadcam_img_src_urls = resort_object["roadcam_img_src_urls"]
-
-    img_widgets = []
-    for img_src_url in roadcam_img_src_urls:
-        try:
-            # Fetch the image using requests
-            response = requests.get(img_src_url, verify=False)  # Disable SSL verification
-            response.raise_for_status()
-            print(response)
-
-            # Create an AsyncImage widget for each image source
-            img_widget = AsyncImage(source=img_src_url)
-            img_widgets.append(img_widget)
-
-        except requests.exceptions.RequestException as e:
-            print("Error fetching image:", e)
-
-    return img_widgets
+    try:
+        ...
+        return roadcam_img_src_urls
+    except Exception as e:
+        print(f"Error fetching roadcam images: {e}")
+        return []  # Return empty list
 
 def fetch_user_tweets(twitter_handle):
     url = "https://twitter135.p.rapidapi.com/v1.1/UserTimeline/"

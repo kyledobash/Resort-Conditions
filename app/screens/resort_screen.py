@@ -6,8 +6,10 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
+from kivy.uix.image import AsyncImage
 from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
+from kivy.uix.carousel import Carousel
 import webbrowser
 import datetime
 import json
@@ -49,7 +51,7 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=3, size_hint_y=4)
+        main_layout = GridLayout(cols=3, size_hint_y=2, padding='10dp')
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
@@ -200,7 +202,8 @@ class ResortScreen(BoxLayout):
         self.add_widget(bottom_layout)  # Add the bottom_layout to the ResortScreen widget
 
     def adjust_main_layout_width(self, instance, width):
-        self.width = width
+        padding = dp(10)  # 5dp on each side
+        self.width = width - padding
 
     def fetch_data(self):
         self.fetch_traffic_info()
@@ -247,28 +250,47 @@ class ResortScreen(BoxLayout):
 
     def fetch_roadcam_images(self):
         try:
-            # Check if the roadcam_images_label is a child widget of roadcam_images_container
-            if self.roadcam_images_label.parent is None:
-                return
-
             # Use the API method to fetch roadcam images
-            roadcam_img_src_urls = self.roadcam_img_src_urls
-            roadcam_images = api.fetch_roadcam_images_from_api(roadcam_img_src_urls)
+            roadcam_images = api.fetch_roadcam_images_from_api(self.roadcam_img_src_urls)
 
             if roadcam_images:
-                num_images = len(roadcam_images)
-                aspect_ratio = 16 / 9  # Desired aspect ratio of the images
+                carousel = Carousel(direction='right')
 
-                # Calculate the height based on the number of images and aspect ratio
-                container_height = f"{num_images * 100 * aspect_ratio}dp"
+                for img_src_url in roadcam_images:
+                    image = AsyncImage(source=img_src_url, allow_stretch=True, keep_ratio=True)
+                    carousel.add_widget(image)
+                    print(f"Added image with source: {img_src_url}")
 
-                self.roadcam_images_container.height = container_height
+                # Remove the "Fetching Roadcam Images..." label and add the populated Carousel
+                self.roadcam_images_container.remove_widget(self.roadcam_images_label)
+                self.roadcam_images_container.add_widget(carousel)
 
-                for img_widget in roadcam_images:
-                    img_widget.allow_stretch = True  # Set allow_stretch to True to stretch the image
-                    img_widget.keep_ratio = True  # Set keep_ratio to False to stretch the image
-                    self.roadcam_images_container.add_widget(img_widget)
-                self.roadcam_images_container.remove_widget(self.roadcam_images_label)  # Remove the "Fetching Roadcam Images..." label
+                # Add the previous and next arrow buttons
+                previous_button = Button(
+                    text="[color=#808080][b]Previous[/b][/color]",
+                    background_color=(0.3, 0.3, 0.3, 1),
+                    color=(1, 1, 1, 1),
+                    font_size='30sp',
+                    font_name='DrippyFont',
+                    markup=True
+                )
+                previous_button.bind(on_release=lambda _: carousel.load_previous())
+                    
+                next_button = Button(
+                    text="[color=#808080][b]Next[/b][/color]",
+                    background_color=(0.3, 0.3, 0.3, 1),
+                    color=(1, 1, 1, 1),
+                    font_size='30sp',
+                    font_name='DrippyFont',
+                    markup=True
+                )
+                next_button.bind(on_release=lambda _: carousel.load_next())
+                    
+                # Add the buttons below the carousel
+                bottom_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height='50dp')
+                bottom_layout.add_widget(previous_button)
+                bottom_layout.add_widget(next_button)
+                self.roadcam_images_container.add_widget(bottom_layout)               
             else:
                 self.roadcam_images_label.text = "No Roadcam Images Available"
         except Exception as e:
