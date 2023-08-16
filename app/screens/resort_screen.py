@@ -55,9 +55,6 @@ class ResortScreen(BoxLayout):
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
-        # Calculate the width of each column based on the screen width
-        column_width = self.width / 3 - dp(40)  # Subtract the padding (20dp) on each side
-
         # Traffic info container
         traffic_info_container = BoxLayout(orientation='vertical')
         traffic_info_title = CustomLabel(
@@ -67,7 +64,7 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp'
         )
-        self.traffic_info_label = CustomLabel(text="Fetching traffic info...", font_size='18sp')
+        self.traffic_info_label = CustomLabel(text="Fetching traffic info...", font_size='18sp', halign='center')
         traffic_info_container.add_widget(traffic_info_title)
         traffic_info_container.add_widget(self.traffic_info_label)
         main_layout.add_widget(traffic_info_container)
@@ -84,6 +81,7 @@ class ResortScreen(BoxLayout):
         self.twitter_data_label = CustomLabel(
             text="Fetching Tweets...",
             font_size='18sp',
+            halign='center'
         )
         twitter_data_container.add_widget(twitter_data_title)
         twitter_data_container.add_widget(self.twitter_data_label)
@@ -98,7 +96,7 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp')
+        self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp', halign='center')
         self.roadcam_images_container.add_widget(roadcams_data_title)
         self.roadcam_images_container.add_widget(self.roadcam_images_label)
         main_layout.add_widget(self.roadcam_images_container)
@@ -112,7 +110,7 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.weather_label = CustomLabel(text="Fetching weather data...", font_size='18sp')
+        self.weather_label = CustomLabel(text="Fetching weather data...", font_size='18sp', halign='center')
         weather_data_container.add_widget(weather_data_title)
         weather_data_container.add_widget(self.weather_label)
         main_layout.add_widget(weather_data_container)
@@ -126,7 +124,7 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.forecast_label = CustomLabel(text="Fetching forecast data...", font_size='18sp', markup=True)
+        self.forecast_label = CustomLabel(text="Fetching forecast data...", font_size='18sp', markup=True, halign='center')
         forecast_data_container.add_widget(forecast_data_title)
         forecast_data_container.add_widget(self.forecast_label)
         main_layout.add_widget(forecast_data_container)
@@ -140,7 +138,7 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...", font_size='18sp')
+        self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...", font_size='18sp', halign='center')
         hourly_forecast_container.add_widget(hourly_data_title)
         hourly_forecast_container.add_widget(self.hourly_forecast_label)
         main_layout.add_widget(hourly_forecast_container)
@@ -168,7 +166,7 @@ class ResortScreen(BoxLayout):
             font_name='DrippyFont',
             font_size='30sp',
         )
-        self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp')
+        self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp', halign='center')
         resort_data_container.add_widget(resort_data_title)
         resort_data_container.add_widget(self.resort_data_label)
         main_layout.add_widget(resort_data_container)
