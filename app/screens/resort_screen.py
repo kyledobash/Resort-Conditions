@@ -51,7 +51,7 @@ class ResortScreen(BoxLayout):
         self.add_widget(scroll_view)
 
         # Main layout for all data sets
-        main_layout = GridLayout(cols=3, size_hint_y=2, padding='10dp')
+        main_layout = GridLayout(cols=3, size_hint_y=3, padding='10dp')
         main_layout.bind(minimum_height=main_layout.setter('height'))
         scroll_view.add_widget(main_layout)
 
@@ -90,7 +90,7 @@ class ResortScreen(BoxLayout):
         main_layout.add_widget(twitter_data_container)
 
         # Create the roadcam images container and label
-        self.roadcam_images_container = BoxLayout(orientation='vertical', size_hint_y=3)
+        self.roadcam_images_container = BoxLayout(orientation='vertical')
         roadcams_data_title = CustomLabel(
             text="[color=#FFD700][b]Roadcams[/b][/color]",
             halign='center',
