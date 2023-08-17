@@ -62,7 +62,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp'
+            font_size='35sp'
         )
         self.traffic_info_label = CustomLabel(text="Fetching traffic info...", font_size='18sp', halign='center')
         traffic_info_container.add_widget(traffic_info_title)
@@ -76,7 +76,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.twitter_data_label = CustomLabel(
             text="Fetching Tweets...",
@@ -94,7 +94,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.roadcam_images_label = CustomLabel(text="Fetching Roadcam Images...", font_size='18sp', halign='center')
         self.roadcam_images_container.add_widget(roadcams_data_title)
@@ -108,7 +108,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.weather_label = CustomLabel(text="Fetching weather data...", font_size='18sp', halign='center')
         weather_data_container.add_widget(weather_data_title)
@@ -122,7 +122,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.forecast_label = CustomLabel(text="Fetching forecast data...", font_size='18sp', markup=True, halign='center')
         forecast_data_container.add_widget(forecast_data_title)
@@ -136,7 +136,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.hourly_forecast_label = CustomLabel(text="Fetching hourly forecast data...", font_size='18sp', halign='center')
         hourly_forecast_container.add_widget(hourly_data_title)
@@ -150,7 +150,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.historical_data_label = CustomLabel(text="Fetching historical current data...", font_size='18sp')
         historical_data_container.add_widget(historical_data_title)
@@ -164,7 +164,7 @@ class ResortScreen(BoxLayout):
             halign='center',
             markup=True,
             font_name='DrippyFont',
-            font_size='30sp',
+            font_size='35sp',
         )
         self.resort_data_label = CustomLabel(text="Fetching resort data...", font_size='18sp', halign='center')
         resort_data_container.add_widget(resort_data_title)
@@ -268,7 +268,7 @@ class ResortScreen(BoxLayout):
                     text="[color=#808080][b]Previous[/b][/color]",
                     background_color=(0.3, 0.3, 0.3, 1),
                     color=(1, 1, 1, 1),
-                    font_size='30sp',
+                    font_size='25sp',
                     font_name='DrippyFont',
                     markup=True
                 )
@@ -278,7 +278,7 @@ class ResortScreen(BoxLayout):
                     text="[color=#808080][b]Next[/b][/color]",
                     background_color=(0.3, 0.3, 0.3, 1),
                     color=(1, 1, 1, 1),
-                    font_size='30sp',
+                    font_size='25sp',
                     font_name='DrippyFont',
                     markup=True
                 )
