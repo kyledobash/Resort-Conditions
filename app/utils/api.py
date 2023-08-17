@@ -94,7 +94,8 @@ def fetch_historical_current_data(location_key):
         if historical_current_data and isinstance(historical_current_data, list):
             # Extract and format historical current conditions data for display
             historical_current_data_str = "Historical Current Conditions (Past 24 Hours):\n"
-            for data in historical_current_data:
+            last_12_hours_data = historical_current_data[-12:]  # Get the last 12 hours of data
+            for data in last_12_hours_data:
                 time_str = data.get("LocalObservationDateTime")
                 time = datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%S%z")
                 formatted_time = time.strftime("%b %d %H:%M")  # Format: Month Day Hour:Minute
