@@ -2,7 +2,7 @@
  
 Resort-Conditions is a simple and efficient app designed to provide you with all the information you need for a successful day on the slopes. No need to check 5 or 6 different apps or websites – all the information you need is conveniently consolidated in one place. 
  
-Resort-Conditions displays essential details about local Utah ski resorts, including traffic updates, weather forecasts, current conditions, camera feeds, and recent tweets, so ensure you are prepared to make it to the mountain and back safely.
+Resort-Conditions displays essential details about local Utah ski resorts, including traffic updates, weather forecasts, current conditions, camera feeds, and recent tweets, to ensure you are prepared to make it to the mountain and back safely.
  
 Simplify your pre-snowboarding routine and save time with Resort-Conditions. Get the information you need quickly and easily, so you can focus on enjoying your time on the mountain.
  
