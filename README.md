@@ -34,7 +34,8 @@ Once you have obtained the API keys, follow these steps:
 - Recent tweets related to the resorts. 
 - UDOT roadcam live feed images for real-time views of road conditions. 
 - Weather forecasts and conditions for the past, present, and future. 
-- Lift status information to know which lifts are operational. 
+- Lift status information to know which lifts are operational.
+- Snow conditions/Base Measurements
  
 ## Technologies Used 
  
