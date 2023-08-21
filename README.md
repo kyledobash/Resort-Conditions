@@ -1,6 +1,10 @@
 # Resort-Conditions 
  
-Resort-Conditions is a simple app that provides information about local Utah ski resorts, including traffic, weather, conditions, camera feeds, and recent tweets. 
+Resort-Conditions is a simple and efficient app designed to provide you with all the information you need for a successful day on the slopes. No need to check 5 or 6 different apps or websites – all the information you need is conveniently consolidated in one place. 
+ 
+Resort-Conditions displays essential details about local Utah ski resorts, including traffic updates, weather forecasts, current conditions, camera feeds, and recent tweets, so ensure you are prepared to make it to the mountain and back safely.
+ 
+Simplify your pre-snowboarding routine and save time with Resort-Conditions. Get the information you need quickly and easily, so you can focus on enjoying your time on the mountain.
  
 ## Installation 
 
@@ -35,9 +39,18 @@ Once you have obtained the API keys, follow these steps:
 ## Technologies Used 
  
 - Python 
-- Kivy 
+- Kivy
+- geolocation 
 - Bing Maps API 
-- Various X Rapid APIs for Twitter and ski lift conditions 
+- AccuWeather API
+- twitter135 X Rapid API
+- ski-resorts-and-conditions X Rapid API
+
+## Main Menu
+
+![Main Menu](app/images/main_menu.gif)
+
+This GIF showcases the main menu of the Resort-Conditions app.
  
 ## License 
  
