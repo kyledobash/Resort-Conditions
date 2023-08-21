@@ -2,16 +2,12 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.core.window import Window
 from kivy.core.text import LabelBase
-import logging
 from dotenv import load_dotenv
 from app.utils import api
 from app.config.config import resorts
 from app.utils.geolocation import get_user_location
 from app.screens.resort_screen import ResortScreen
 from app.screens.main_menu_screen import MainMenuScreen
-
-# Set the logging level to WARNING
-logging.basicConfig(level=logging.WARNING)
 
 # Load environment variables from .env
 load_dotenv()
