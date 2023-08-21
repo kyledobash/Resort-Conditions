@@ -11,8 +11,6 @@ from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
 from kivy.uix.carousel import Carousel
 import webbrowser
-import datetime
-import json
 
 from app.config.config import resorts
 from app.utils import api
