@@ -250,43 +250,44 @@ class ResortScreen(BoxLayout):
             roadcam_images = api.fetch_roadcam_images_from_api(self.roadcam_img_src_urls)
 
             if roadcam_images:
-                carousel = Carousel(direction='right')
+                if not hasattr(self, "carousel"):
+                    self.carousel = Carousel(direction='right')
 
-                for img_src_url in roadcam_images:
-                    image = AsyncImage(source=img_src_url, allow_stretch=True, keep_ratio=True)
-                    carousel.add_widget(image)
-                    print(f"Added image with source: {img_src_url}")
+                    for img_src_url in roadcam_images:
+                        image = AsyncImage(source=img_src_url, allow_stretch=True, keep_ratio=True)
+                        self.carousel.add_widget(image)
+                        print(f"Added image with source: {img_src_url}")
 
-                # Remove the "Fetching Roadcam Images..." label and add the populated Carousel
-                self.roadcam_images_container.remove_widget(self.roadcam_images_label)
-                self.roadcam_images_container.add_widget(carousel)
+                    # Remove the "Fetching Roadcam Images..." label and add the populated Carousel
+                    self.roadcam_images_container.remove_widget(self.roadcam_images_label)
+                    self.roadcam_images_container.add_widget(self.carousel)
 
-                # Add the previous and next arrow buttons
-                previous_button = Button(
-                    text="[color=#808080][b]Previous[/b][/color]",
-                    background_color=(0.3, 0.3, 0.3, 1),
-                    color=(1, 1, 1, 1),
-                    font_size='25sp',
-                    font_name='DrippyFont',
-                    markup=True
-                )
-                previous_button.bind(on_release=lambda _: carousel.load_previous())
-                    
-                next_button = Button(
-                    text="[color=#808080][b]Next[/b][/color]",
-                    background_color=(0.3, 0.3, 0.3, 1),
-                    color=(1, 1, 1, 1),
-                    font_size='25sp',
-                    font_name='DrippyFont',
-                    markup=True
-                )
-                next_button.bind(on_release=lambda _: carousel.load_next())
-                    
-                # Add the buttons below the carousel
-                bottom_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height='50dp')
-                bottom_layout.add_widget(previous_button)
-                bottom_layout.add_widget(next_button)
-                self.roadcam_images_container.add_widget(bottom_layout)               
+                    # Add the previous and next arrow buttons
+                    previous_button = Button(
+                        text="[color=#808080][b]Previous[/b][/color]",
+                        background_color=(0.3, 0.3, 0.3, 1),
+                        color=(1, 1, 1, 1),
+                        font_size='25sp',
+                        font_name='DrippyFont',
+                        markup=True
+                    )
+                    previous_button.bind(on_release=lambda _: self.carousel.load_previous())
+
+                    next_button = Button(
+                        text="[color=#808080][b]Next[/b][/color]",
+                        background_color=(0.3, 0.3, 0.3, 1),
+                        color=(1, 1, 1, 1),
+                        font_size='25sp',
+                        font_name='DrippyFont',
+                        markup=True
+                    )
+                    next_button.bind(on_release=lambda _: self.carousel.load_next())
+
+                    # Add the buttons below the carousel
+                    bottom_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height='50dp')
+                    bottom_layout.add_widget(previous_button)
+                    bottom_layout.add_widget(next_button)
+                    self.roadcam_images_container.add_widget(bottom_layout)
             else:
                 self.roadcam_images_label.text = "No Roadcam Images Available"
         except Exception as e:
