@@ -11,6 +11,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.metrics import dp
 from kivy.uix.carousel import Carousel
 import webbrowser
+import ssl
+import requests
 
 from app.config.config import resorts
 from app.utils import api
@@ -244,46 +246,29 @@ class ResortScreen(BoxLayout):
         except Exception as e:
             print(f"Error fetching hourly forecast data: {e}")
 
+    ssl._create_default_https_context = ssl._create_unverified_context
+
     def fetch_roadcam_images(self):
         try:
-            # Use the API method to fetch roadcam images
-            roadcam_images = api.fetch_roadcam_images_from_api(self.roadcam_img_src_urls)
+            roadcam_images = []
+            for img_src_url in self.roadcam_img_src_urls:
+                response = requests.get(img_src_url, verify=False)
+                if response.status_code == 200:
+                    roadcam_images.append(img_src_url)
+                    print(f"Added image with source: {img_src_url}")
 
             if roadcam_images:
                 if not hasattr(self, "carousel"):
                     self.carousel = Carousel(direction='right')
-
                     for img_src_url in roadcam_images:
                         image = AsyncImage(source=img_src_url, allow_stretch=True, keep_ratio=True)
                         self.carousel.add_widget(image)
-                        print(f"Added image with source: {img_src_url}")
-
-                    # Remove the "Fetching Roadcam Images..." label and add the populated Carousel
                     self.roadcam_images_container.remove_widget(self.roadcam_images_label)
                     self.roadcam_images_container.add_widget(self.carousel)
-
-                    # Add the previous and next arrow buttons
-                    previous_button = Button(
-                        text="[color=#808080][b]Previous[/b][/color]",
-                        background_color=(0.3, 0.3, 0.3, 1),
-                        color=(1, 1, 1, 1),
-                        font_size='25sp',
-                        font_name='DrippyFont',
-                        markup=True
-                    )
+                    previous_button = Button(text="[color=#808080][b]Previous[/b][/color]", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1), font_size='25sp', font_name='DrippyFont', markup=True)
                     previous_button.bind(on_release=lambda _: self.carousel.load_previous())
-
-                    next_button = Button(
-                        text="[color=#808080][b]Next[/b][/color]",
-                        background_color=(0.3, 0.3, 0.3, 1),
-                        color=(1, 1, 1, 1),
-                        font_size='25sp',
-                        font_name='DrippyFont',
-                        markup=True
-                    )
+                    next_button = Button(text="[color=#808080][b]Next[/b][/color]", background_color=(0.3, 0.3, 0.3, 1), color=(1, 1, 1, 1), font_size='25sp', font_name='DrippyFont', markup=True)
                     next_button.bind(on_release=lambda _: self.carousel.load_next())
-
-                    # Add the buttons below the carousel
                     bottom_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height='50dp')
                     bottom_layout.add_widget(previous_button)
                     bottom_layout.add_widget(next_button)
